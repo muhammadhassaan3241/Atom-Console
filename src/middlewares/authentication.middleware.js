@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 // module
 import { User } from "../models/user.model.js";
 
-// comparing password
+// password authentication
 export const authenticationMiddleware = async (request, response, next) => {
     try {
         await User.findOne({ where: { email: request.body.email } })
@@ -14,16 +14,15 @@ export const authenticationMiddleware = async (request, response, next) => {
                         const isMatched = await bcrypt.compare(request.body.password, user.password);
                         !isMatched
                             ? response.status(400).send({
-                                failure: "response failed",
-                                message: "invalid email or password",
+                                status: "0",
+                                message: "Invalid Credentials",
                             })
                             : next()
                     })()
                     : (async () => {
                         response.status(400).send({
-                            failure: "response failed",
-                            message: "invalid email or password",
-                            data: user
+                            status: "0",
+                            message: "Invalid Credentials",
                         })
                     })()
             })

@@ -43,7 +43,6 @@ export const findOne = async (model, object, callback) => {
     try {
         const user = await model.findOne({
             where: object,
-            include: [{ model: Role, include: [Permission] }]
         });
 
         user ? callback(user) : callback(user);

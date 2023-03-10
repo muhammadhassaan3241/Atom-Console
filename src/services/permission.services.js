@@ -3,7 +3,6 @@
 // create 
 export const create = async (model, permissionname, body, callback) => {
     try {
-        // finding user in db
         const permission = await model.findOne({ where: permissionname });
         (permission !== null)
             ? callback(permission)

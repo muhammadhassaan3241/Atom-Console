@@ -6,6 +6,7 @@ const router = Router();
 import { getUsers, getUserById, createUser, updateUser, deleteUser } from "../controllers/user.controller.js";
 import { getRoles, getRoleById, createRole, updateRole, deleteRole } from "../controllers/role.controller.js";
 import { getPermissions, getPermissionById, createPermission, updatePermission, deletePermission } from "../controllers/permission.controller.js";
+
 // routes
 router
     .get("/users/get", getUsers)

@@ -1,10 +1,15 @@
 // packages
 import axios from "axios";
-import bcrypt from "bcrypt";
 
 // modules
 import { Role } from "../models/user.model.js";
-import { create, findAll, findOne, findByIdAndUpdate, findByIdAndDelete } from "../services/roles.services.js";
+import {
+    create,
+    findAll,
+    findOne,
+    findByIdAndUpdate,
+    findByIdAndDelete
+} from "../services/roles.services.js";
 
 // ROLE_CRUD
 
@@ -18,23 +23,22 @@ export const createRole = async (request, response) => {
         const permissions = request.body.permissions;
 
         create(Role, rolename, permissions, requestBody, (data) => {
-
-            return data ? response.send(
-                {
-                    success: "response successful",
+            return data
+                ? response.status().send({
+                    status: "0",
                     message: "role already exists",
                     data: data
-                }
-
-            ) : response.send(
-                {
-                    success: "response successful",
-                    message: "role created",
-                }
-            );
+                })
+                : response.send({
+                    status: "1",
+                    message: "role created successfully",
+                });
         })
+
     } catch (error) {
-        throw error
+        return response.status(500).send({
+            message: "something went wrong"
+        })
     }
 }
 
@@ -44,23 +48,21 @@ export const getRoleById = async (request, response) => {
         const roleId = { id: request.params.id };
 
         findOne(Role, roleId, (data) => {
-
-            return data ? response.send(
-                {
-                    success: "response successful",
-                    message: "role found",
+            return data
+                ? response.send({
+                    status: "1",
+                    message: "role found successfully",
                     data: data
-                }
-
-            ) : response.send(
-                {
-                    failure: "response successful",
+                })
+                : response.send({
+                    status: "0",
                     message: "role not found",
-                }
-            );
+                });
         });
     } catch (error) {
-        throw err
+        return response.status(500).send({
+            message: "something went wrong"
+        })
     }
 }
 
@@ -68,24 +70,22 @@ export const getRoleById = async (request, response) => {
 export const getRoles = async (request, response) => {
     try {
         findAll(Role, (data) => {
-
-            return data ? response.send(
-                {
-                    success: "response successful",
-                    message: "roles found",
+            return data
+                ? response.send({
+                    status: "1",
+                    message: "roles found successfully",
                     data: data
-                }
-
-            ) : response.send(
-                {
-                    failure: "response successful",
+                })
+                : response.send({
+                    status: "0",
                     message: "roles not found",
-                }
-            );
+                });
         });
 
     } catch (error) {
-        throw err
+        return response.status(500).send({
+            message: "something went wrong"
+        })
     }
 }
 
@@ -99,22 +99,19 @@ export const updateRole = async (request, response) => {
         const role = findByIdAndUpdate(Role, roleId, requestBody);
 
         return role
-            ? response.send(
-                {
-                    success: "response successful",
-                    message: "role updated",
-                }
-            )
-
-            : response.send(
-                {
-                    failure: "response successful",
-                    message: "role not updated",
-                }
-            );
+            ? response.send({
+                status: "1",
+                message: "role updated successfully",
+            })
+            : response.send({
+                status: "0",
+                message: "role not updated",
+            });
 
     } catch (error) {
-        throw err
+        return response.status(500).send({
+            message: "something went wrong"
+        })
     }
 }
 
@@ -126,22 +123,19 @@ export const deleteRole = async (request, response) => {
         const role = findByIdAndDelete(Role, roleId);
 
         return role
-            ? response.send(
-                {
-                    success: "response successful",
-                    message: "role deleted",
-                }
-            )
-
-            : response.send(
-                {
-                    failure: "response successful",
-                    message: "role not deleted",
-                }
-            );
+            ? response.send({
+                status: "1",
+                message: "role deleted successfully",
+            })
+            : response.send({
+                status: "0",
+                message: "role not deleted",
+            });
 
     } catch (error) {
-        throw err
+        return response.status(500).send({
+            message: "something went wrong"
+        })
     }
 }
 

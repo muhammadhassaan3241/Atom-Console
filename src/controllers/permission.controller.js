@@ -1,10 +1,15 @@
 // packages
 import axios from "axios";
-import bcrypt from "bcrypt";
 
 // modules
 import { Permission } from "../models/user.model.js";
-import { create, findAll, findOne, findByIdAndUpdate, findByIdAndDelete } from "../services/permission.services.js";
+import {
+    create,
+    findAll,
+    findOne,
+    findByIdAndUpdate,
+    findByIdAndDelete
+} from "../services/permission.services.js";
 
 // PERMISSION_CRUD
 
@@ -33,7 +38,10 @@ export const createPermission = async (request, response) => {
             );
         })
     } catch (error) {
-        throw error
+        return response.status(404).send({
+            failure: "response failed",
+            message: "something went wrong"
+        })
     }
 }
 
@@ -60,7 +68,10 @@ export const getPermissionById = async (request, response) => {
             );
         });
     } catch (error) {
-        throw err
+        return response.status(404).send({
+            failure: "response failed",
+            message: "something went wrong"
+        })
     }
 }
 
@@ -85,7 +96,10 @@ export const getPermissions = async (request, response) => {
         });
 
     } catch (error) {
-        throw err
+        return response.status(404).send({
+            failure: "response failed",
+            message: "something went wrong"
+        })
     }
 }
 
@@ -114,7 +128,10 @@ export const updatePermission = async (request, response) => {
             );
 
     } catch (error) {
-        throw err
+        return response.status(404).send({
+            failure: "response failed",
+            message: "something went wrong"
+        })
     }
 }
 
@@ -141,7 +158,10 @@ export const deletePermission = async (request, response) => {
             );
 
     } catch (error) {
-        throw err
+        return response.status(404).send({
+            failure: "response failed",
+            message: "something went wrong"
+        })
     }
 }
 

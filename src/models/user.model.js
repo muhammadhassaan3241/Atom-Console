@@ -52,7 +52,7 @@ export const User = sequelize.define("User", {
             user.password = hashPassword;
         },
         beforeUpdate: async (user) => {
-            if (user.changed("password")) {
+            if (user.changed('password')) {
                 const saltRounds = await bcrypt.genSalt(10);
                 const hashPassword = await bcrypt.hash(user.password, saltRounds)
                 user.password = hashPassword;

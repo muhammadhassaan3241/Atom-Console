@@ -1,24 +1,82 @@
-// package
+import supertest from "supertest";
+import app from "../app.js";
+const request = supertest(app);
 import { expect } from "chai";
-import { loginUser } from "../controllers/user.controller.js"
 
-describe("POST api/users/login", () => {
-    it("should return successfull response with auth token in string", () => {
-        const request = {};
-        const response = {
-            status: (statusCode) => {
-                expect(statusCode).to.equal(200);
-                return {
-                    send: (data) => {
-                        expect(data).to.have.property("success").to.equal("response successfull");
-                        expect(data).to.have.property("message").to.equal("authentication successfull");
-                        expect(data).to.have.property("action").to.equal("user successfully logged in");
-                        expect(data).to.have.property("token").to.be.a("string");
+const validCredentials = {
+    email: "alie@yopmail.com",
+    password: "alie"
+}
+const body = {
+    parentkey: process.env.AUTH_SECRET_KEY,
+    firstname: "Muhammad",
+    lastname: "Hassan",
+    email: "hassan@yopmail.com",
+    password: "hassan",
+    role: "Customer"
+}
 
-                    }
-                }
-            }
-        };
-        loginUser(request, response)
+let token;
+
+describe("CRUD api/users/", function () {
+
+    before(async () => {
+        const response = await request
+            .post("/api/admin/login")
+            .send(validCredentials);
+
+        token = response.body.token;
+        expect(response.status).to.eql(200);
+        expect(response.body.message).to.eql("User Successfully Logged In");
     })
-})
+
+    it("should create user", async function () {
+        const response = await request
+            .post("/api/users/create")
+            .send(body)
+            .set("Content-Type", "application/json")
+            .set("Authorization", `Bearer ${token}`);
+
+
+        expect(response.status).to.eql(200);
+        expect(response.body.message).to.eql("User Created Successfully");
+    });
+
+    it("should get all users", async function () {
+        const response = await request
+            .get("/api/users/get")
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(response.status).to.eql(200);
+        expect(response.body.message).to.eql("Users Found Successfully");
+    });
+
+    it("should get user by id", async function () {
+        const response = await request
+            .get(`/api/users/get/1`)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(response.status).to.eql(200);
+        expect(response.body.message).to.eql("User Found Successfully");
+    });
+
+    it("should update user by id", async function () {
+        const response = await request
+            .get(`/api/users/update/1`)
+            .send({ firstname: "Steve" })
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(response.status).to.eql(200);
+        expect(response.body.message).to.eql("User Updated Successfully");
+    });
+
+    it("should delete user by id", async function () {
+        const response = await request
+            .get(`/api/users/delete/1`)
+            .set("Authorization", `Bearer ${token}`);
+
+        expect(response.status).to.eql(200);
+        expect(response.body.message).to.eql("User Deleted Successfully");
+    });
+
+});

@@ -1,7 +1,7 @@
 // package
 import rateLimit from "express-rate-limit";
 
-// rate limiting
+// api rate limiting
 export const apiRequestLimiter = rateLimit({
     windowMs: 1 * 60 * 1000,
     max: 10,

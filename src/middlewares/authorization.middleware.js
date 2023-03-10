@@ -24,7 +24,7 @@ export class Permissions {
     }
 }
 
-export const authorizationMiddlewareForWrite = async (request, response, next) => {
+export const authorizationMiddleware = async (request, response, next) => {
     try {
 
         const user = request.user;

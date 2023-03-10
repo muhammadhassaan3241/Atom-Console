@@ -39,7 +39,7 @@ app.use(cors(
 ));
 
 // api rate limit middleware
-import { apiRequestLimiter } from './middlewares/rate-limit.middleware.js';
+import { apiRequestLimiter } from './middlewares/ratelimit.middleware.js';
 app.use(apiRequestLimiter)
 
 // route
@@ -48,8 +48,8 @@ app.get("/", (request, response) => {
 })
 
 // express middlewares
-import { jwtVerification, refreshToken } from './middlewares/auth.middleware.js';
-import { authorizationMiddlewareForWrite } from './middlewares/authorization.middleware.js';
+import { jwtVerification } from './middlewares/verification.middleware.js';
+import { authorizationMiddleware } from './middlewares/authorization.middleware.js';
 // app.use(refreshToken)
 
 // api routes
@@ -57,7 +57,7 @@ import adminRoutes from "./routes/login.routes.js";
 import userRoutes from "./routes/user.routes.js"
 
 app.use("/api", adminRoutes);
-app.use("/api", jwtVerification, authorizationMiddlewareForWrite, userRoutes);
+app.use("/api", jwtVerification, authorizationMiddleware, userRoutes);
 
 // 404 routes
 app.use((request, response) => {
