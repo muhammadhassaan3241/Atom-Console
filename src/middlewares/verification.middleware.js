@@ -30,7 +30,9 @@ export const jwtVerification = async (request, response, next) => {
             })()
 
     } catch (error) {
-        throw error
+        response.status(500).send({
+            message: "Something Went Wrong",
+        })
     }
 }
 

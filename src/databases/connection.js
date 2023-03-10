@@ -4,7 +4,7 @@
 import mysql from "mysql";
 
 // modules
-import { DBHOST, DBNAME, DBPASS, DBUSER } from "../config/db.js"
+import { DBHOST, DBNAME, DBPASS, DBUSER } from "../config/db.credentials.js"
 
 // db parameters
 const parameters = {

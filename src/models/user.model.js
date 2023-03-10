@@ -4,7 +4,7 @@ import mysql2 from "mysql2";
 import bcrypt from "bcrypt";
 
 // modules
-import { DBHOST, DBNAME, DBPASS, DBUSER } from "../config/db.js";
+import { DBHOST, DBNAME, DBPASS, DBUSER } from "../config/db.credentials.js";
 
 // db instance 
 export const sequelize = new Sequelize(DBNAME, DBUSER, DBPASS,
