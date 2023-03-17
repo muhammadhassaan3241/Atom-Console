@@ -16,7 +16,10 @@ export const sequelize = new Sequelize(DBNAME, DBUSER, DBPASS,
 
 // User Model
 export const User = sequelize.define("User", {
-
+    reseller_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
     parentkey: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -80,14 +83,17 @@ export const Permission = sequelize.define('Permission', {
 // defining many to one relation between user and role
 User.belongsTo(Role, { through: "UserRole" });
 
-// defining many to many relation between roles and permissions
-User.belongsToMany(Permission, { through: "UserPermission" });
-Permission.belongsToMany(User, { through: "UserPermission" });
+// // defining many to many relation between roles and permissions
+// User.belongsToMany(Permission, { through: "UserPermission" });
+// Permission.belongsToMany(User, { through: "UserPermission" });
 
 // defining many to many relation between roles and permissions
 Role.belongsToMany(Permission, { through: "RolePermission" });
 Permission.belongsToMany(Role, { through: "RolePermission" });
 
+// // defining many to many relation between roles and users
+// User.belongsToMany(Role, { through: "UserRole" });
+// Role.belongsToMany(User, { through: "UserRole" });
 
 // synchronizing tables
 sequelize.sync({ force: false })

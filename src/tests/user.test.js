@@ -9,10 +9,10 @@ const validCredentials = {
 }
 const body = {
     parentkey: process.env.AUTH_SECRET_KEY,
-    firstname: "Muhammad",
-    lastname: "Hassan",
-    email: "hassan@yopmail.com",
-    password: "hassan",
+    firstname: "Steve",
+    lastname: "Rogers",
+    email: "steve@yopmail.com",
+    password: "rogers",
     role: "Customer"
 }
 
@@ -44,7 +44,7 @@ describe("CRUD api/users/", function () {
 
     it("should get all users", async function () {
         const response = await request
-            .get("/api/users/get")
+            .get("/api/users/read")
             .set("Authorization", `Bearer ${token}`);
 
         expect(response.status).to.eql(200);
@@ -53,7 +53,7 @@ describe("CRUD api/users/", function () {
 
     it("should get user by id", async function () {
         const response = await request
-            .get(`/api/users/get/1`)
+            .get(`/api/users/read/67`)
             .set("Authorization", `Bearer ${token}`);
 
         expect(response.status).to.eql(200);
@@ -62,8 +62,8 @@ describe("CRUD api/users/", function () {
 
     it("should update user by id", async function () {
         const response = await request
-            .get(`/api/users/update/1`)
-            .send({ firstname: "Steve" })
+            .get(`/api/users/update/67`)
+            .send({ firstname: "Bob" })
             .set("Authorization", `Bearer ${token}`);
 
         expect(response.status).to.eql(200);
@@ -72,7 +72,7 @@ describe("CRUD api/users/", function () {
 
     it("should delete user by id", async function () {
         const response = await request
-            .get(`/api/users/delete/1`)
+            .get(`/api/users/delete/67`)
             .set("Authorization", `Bearer ${token}`);
 
         expect(response.status).to.eql(200);

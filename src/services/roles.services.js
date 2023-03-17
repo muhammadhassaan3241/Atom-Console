@@ -10,7 +10,7 @@ export const create = async (model, rolename, permissions, body, callback) => {
         const role = await model.findOne({ where: rolename });
 
         (role !== null)
-            ? callback(role)
+            ? callback(role, 409, "0", "Role Already Exists")
             : (async () => {
                 const newRole = await model.create(body);
                 await Permission.findAll({
@@ -23,9 +23,8 @@ export const create = async (model, rolename, permissions, body, callback) => {
                     await newRole.setPermissions(permissions)
                 })
 
-                callback(role);
+                callback(role, 200, "1", "Role Created Successfully");
             })();
-
 
     } catch (error) {
         throw error
@@ -35,8 +34,12 @@ export const create = async (model, rolename, permissions, body, callback) => {
 // findAll
 export const findAll = async (model, callback) => {
     try {
-        const roles = await model.findAll();
-        callback(roles)
+        await model.findAll()
+            .then((roles) => {
+                (roles !== null)
+                    ? callback(roles, 200, "1", "Roles Found Successfully")
+                    : callback(roles, 404, "0", "Roles Not Found")
+            })
 
     } catch (error) {
         throw error
@@ -46,12 +49,14 @@ export const findAll = async (model, callback) => {
 // findOne
 export const findOne = async (model, object, callback) => {
     try {
-        const role = await model.findOne({
+        await model.findOne({
             where: object,
             include: [Permission]
-        });
-
-        role ? callback(role) : callback(role);
+        }).then((role) => {
+            (role !== null)
+                ? callback(role, 200, "1", "Role Found Successfully")
+                : callback(role, 404, "1", "Role Not Found");
+        })
 
     } catch (error) {
         throw error
@@ -59,11 +64,27 @@ export const findOne = async (model, object, callback) => {
 }
 
 // findByIdAndUpdate
-export const findByIdAndUpdate = async (model, roleId, updatedrole) => {
+export const findByIdAndUpdate = async (model, roleId, permissions, body, callback) => {
     try {
-        const fields = updatedrole;
+        const fields = body;
+        const permissionArray = permissions;
 
-        await model.update(fields, { where: { id: roleId } });
+        (permissionArray !== null)
+            ? (async () => {
+                const role = await model.findOne({ where: { id: roleId } });
+                (role === null)
+                    ? callback(null, 404, "0", "Role Not Found")
+                    : (async () => {
+                        await role.setPermissions(permissions)
+                        await role.update(fields)
+                        callback(role, 200, "1", "Role Updated Successfully");
+                    })()
+            })()
+            : (async () => {
+                const role = await model.findOne({ where: { id: roleId } });
+                await role.update(fields);
+                return callback(role, 200, "1", "Role Updated Successfully");
+            })()
 
     } catch (error) {
         throw error

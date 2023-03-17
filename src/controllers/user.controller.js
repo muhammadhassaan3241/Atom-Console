@@ -22,16 +22,16 @@ export const createUser = async (request, response) => {
 
         const rolename = { name: request.body.role };
 
-        create(User, email, rolename, requestBody, (data) => {
+        create(User, email, rolename, requestBody, (data, statusCode, customStatus, message) => {
             return data
-                ? response.status(409).send({
-                    status: "0",
-                    message: "User Already Exists",
+                ? response.status(statusCode).send({
+                    status: customStatus,
+                    message: message,
                     data: data
                 })
-                : response.status(200).send({
-                    status: "1",
-                    message: "User Created Successfully",
+                : response.status(statusCode).send({
+                    status: customStatus,
+                    message: message,
                     data: data,
                 });
         })
@@ -69,16 +69,16 @@ export const getUserById = async (request, response) => {
     try {
         const userId = { id: request.params.id };
 
-        findOne(User, userId, (data) => {
-            return data
-                ? response.status(200).send({
-                    status: "1",
-                    message: "User Found Successfully",
+        findOne(User, userId, (data, statusCode, customStatus, message) => {
+            return (data !== null)
+                ? response.status(statusCode).send({
+                    status: customStatus,
+                    message: message,
                     data: data
                 })
-                : response.status(404).send({
-                    status: "0",
-                    message: "User Not Found",
+                : response.status(statusCode).send({
+                    status: customStatus,
+                    message: message,
                 });
         });
     } catch (error) {
@@ -91,17 +91,17 @@ export const getUserById = async (request, response) => {
 // get all users
 export const getUsers = async (request, response) => {
     try {
-        findAll(User, (data) => {
+        findAll(User, (data, statusCode, customStatus, message) => {
 
-            return data
-                ? response.status(200).send({
-                    status: "1",
-                    message: "Users Found Successfully",
+            return (data !== null)
+                ? response.status(statusCode).send({
+                    status: customStatus,
+                    message: message,
                     data: data
                 })
-                : response.status(404).send({
-                    status: "0",
-                    message: "Users Not Found",
+                : response.status(statusCode).send({
+                    status: customStatus,
+                    message: message,
                 });
         });
 
@@ -119,18 +119,20 @@ export const updateUser = async (request, response) => {
 
         const userId = request.params.id;
 
-        const user = findByIdAndUpdate(User, userId, requestBody);
+        const role = request.body.role;
 
-        return user
-            ? response.status(200).send({
-                status: "1",
-                message: "User Updated Successfully",
-                data: user
-            })
-            : response.status(400).send({
-                status: "0",
-                message: "Invalid User Id",
-            });
+        findByIdAndUpdate(User, userId, role, requestBody, (data, statusCode, customStatus, message) => {
+            return (data !== null)
+                ? response.status(statusCode).send({
+                    status: customStatus,
+                    message: message,
+                    data: data
+                })
+                : response.status(statusCode).send({
+                    status: customStatus,
+                    message: message,
+                });
+        });
 
     } catch (error) {
         return response.status(500).send({
@@ -144,8 +146,6 @@ export const deleteUser = async (request, response) => {
     try {
         // user id from params
         const userId = request.params.id;
-
-        console.log(userId);
 
         const user = findByIdAndDelete(User, userId);
 

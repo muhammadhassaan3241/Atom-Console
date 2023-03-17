@@ -3,13 +3,13 @@ import rateLimit from "express-rate-limit";
 
 // api rate limiting
 export const apiRequestLimiter = rateLimit({
-    windowMs: 1 * 60 * 1000,
-    max: 10,
+    windowMs: 5 * 60 * 1000,
+    max: 200,
     handler: (request, response, next) => {
         return response
             .status(429)
-            .json({
-                error: "Too many requests in one minute, try later!"
+            .send({
+                error: "Too many requests in five minutes, try later!"
             })
     }
 }) 

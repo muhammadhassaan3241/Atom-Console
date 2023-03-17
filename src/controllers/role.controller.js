@@ -22,16 +22,16 @@ export const createRole = async (request, response) => {
         const rolename = { name: request.body.name }
         const permissions = request.body.permissions;
 
-        create(Role, rolename, permissions, requestBody, (data) => {
+        create(Role, rolename, permissions, requestBody, (data, statusCode, customMessage, message) => {
             return data
-                ? response.status().send({
-                    status: "0",
-                    message: "role already exists",
+                ? response.status(statusCode).send({
+                    status: customMessage,
+                    message: message,
                     data: data
                 })
-                : response.send({
-                    status: "1",
-                    message: "role created successfully",
+                : response.status(statusCode).send({
+                    status: customMessage,
+                    message: message,
                 });
         })
 
@@ -47,16 +47,16 @@ export const getRoleById = async (request, response) => {
     try {
         const roleId = { id: request.params.id };
 
-        findOne(Role, roleId, (data) => {
-            return data
-                ? response.send({
-                    status: "1",
-                    message: "role found successfully",
+        findOne(Role, roleId, (data, statusCode, customMessage, message) => {
+            return (data !== null)
+                ? response.status(statusCode).send({
+                    status: customMessage,
+                    message: message,
                     data: data
                 })
-                : response.send({
-                    status: "0",
-                    message: "role not found",
+                : response.status(statusCode).send({
+                    status: customMessage,
+                    message: message,
                 });
         });
     } catch (error) {
@@ -69,16 +69,16 @@ export const getRoleById = async (request, response) => {
 // get all roles
 export const getRoles = async (request, response) => {
     try {
-        findAll(Role, (data) => {
-            return data
-                ? response.send({
-                    status: "1",
-                    message: "roles found successfully",
+        findAll(Role, (data, statusCode, customMessage, message) => {
+            return (data !== null)
+                ? response.status(statusCode).send({
+                    status: customMessage,
+                    message: message,
                     data: data
                 })
-                : response.send({
-                    status: "0",
-                    message: "roles not found",
+                : response.status(statusCode).send({
+                    status: customMessage,
+                    message: message,
                 });
         });
 
@@ -96,17 +96,20 @@ export const updateRole = async (request, response) => {
 
         const roleId = request.params.id;
 
-        const role = findByIdAndUpdate(Role, roleId, requestBody);
+        const permissions = request.body.permissions;
 
-        return role
-            ? response.send({
-                status: "1",
-                message: "role updated successfully",
-            })
-            : response.send({
-                status: "0",
-                message: "role not updated",
-            });
+        findByIdAndUpdate(Role, roleId, permissions, requestBody, (data, statusCode, customStatus, message) => {
+            return (data !== null)
+                ? response.status(statusCode).send({
+                    status: customStatus,
+                    message: message,
+                    data: data
+                })
+                : response.status(statusCode).send({
+                    status: customStatus,
+                    message: message,
+                });
+        });
 
     } catch (error) {
         return response.status(500).send({

@@ -1,0 +1,116 @@
+[
+    {
+        "uid": "inv_b37bw4x8yyrht",
+        "site_id": 80183,
+        "customer_id": 58473656,
+        "subscription_id": 57812518,
+        "number": "196",
+        "sequence_number": 196,
+        "created_at": "2023-03-16T12:20:37Z",
+        "updated_at": "2023-03-16T12:20:39Z",
+        "issue_date": "2023-03-16",
+        "due_date": "2023-03-19",
+        "paid_date": "2023-03-16",
+        "status": "paid",
+        "collection_method": "remittance",
+        "payment_instructions": "Bank Account Details:\nSettlement Currency : USD\nBeneficiary Bank Name : Citibank N.A., Hong Kong Branch\nBank Address & Country : 3 Garden Road, Central, Hong Kong\nName of Account Holder : GZ Systems Limited\nAccount Number : 1101904012\nBase Number : 101904\nBank Code : 006\nBranch Code : 391\nSWIFT Code : CITIHKHXXXX\n\nIf you have any questions about\nthis invoice, please contact\nfinance@purevpn.com",
+        "currency": "USD",
+        "consolidation_level": "none",
+        "parent_invoice_uid": null,
+        "parent_invoice_number": null,
+        "group_primary_subscription_id": null,
+        "product_name": "PostPaid/Prepaid Billing Types",
+        "product_family_name": "Active Accounts",
+        "role": "renewal",
+        "seller": {
+            "name": "GZ Systems Ltd",
+            "address": {
+                "street": "Intershore Chambers, P.O Box 4342, Road Town, Tortola, VG1110",
+                "line2": "",
+                "city": "",
+                "state": "",
+                "zip": "",
+                "country": "VG"
+            },
+            "phone": ""
+        },
+        "customer": {
+            "chargify_id": 58473656,
+            "first_name": "Samer",
+            "last_name": "Salah",
+            "organization": "TAHALUF AL EMARAT TECHNICAL SOLUTIONS L.L.C.",
+            "email": "s.aburabie@tahaluf.ae",
+            "vat_number": "100523178000003",
+            "reference": null
+        },
+        "memo": "",
+        "billing_address": {
+            "street": null,
+            "line2": null,
+            "city": null,
+            "state": null,
+            "zip": null,
+            "country": null
+        },
+        "shipping_address": {
+            "street": "Al Bustan Office Tower- 5th Floor, Rabdan Street,",
+            "line2": "",
+            "city": "Abu Dhabi",
+            "state": "",
+            "zip": "TRN No: 100523178000003",
+            "country": "AE"
+        },
+        "subtotal_amount": "0.0",
+        "discount_amount": "0.0",
+        "tax_amount": "0.0",
+        "total_amount": "0.0",
+        "credit_amount": "0.0",
+        "paid_amount": "0.0",
+        "refund_amount": "0.0",
+        "due_amount": "0.0",
+        "previous_balance_data": {
+            "captured_at": "2023-03-16T12:20:39Z",
+            "invoices": []
+        },
+        "public_url": "https://www.chargifypay.com/invoice/inv_b37bw4x8yyrht?token=xyfycr6tswf4j5rkgk652s6j"
+    }
+]
+
+[
+    {
+        "id": 5,
+        "subscription_id": 56747820,
+        "subscription_slug": "active-account-based",
+        "reseller_id": 641,
+        "component_id": 1686744,
+        "component_slug": "active-account",
+        "is_process": 0
+    },
+    {
+        "id": 6,
+        "subscription_id": 62028663,
+        "subscription_slug": "connection-based",
+        "reseller_id": 568,
+        "component_id": 1686744,
+        "component_slug": "connected",
+        "is_process": 0
+    },
+    {
+        "id": 7,
+        "subscription_id": 62028973,
+        "subscription_slug": "connection-based",
+        "reseller_id": 641,
+        "component_id": 2192392,
+        "component_slug": "paid",
+        "is_process": 0
+    },
+    {
+        "id": 8,
+        "subscription_id": 62029580,
+        "subscription_slug": "connection-based",
+        "reseller_id": 641,
+        "component_id": 2192384,
+        "component_slug": "trial",
+        "is_process": 0
+    }
+]
