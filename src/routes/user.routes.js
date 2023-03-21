@@ -28,7 +28,7 @@ import {
     getInvoices
 } from "../controllers/invoice.controller.js";
 import {
-    getGraphData
+    GET_graph_data
 } from "../controllers/partner_bill.controller.js";
 
 // routes
@@ -52,6 +52,6 @@ router
     .get("/permissions/delete/:id", deletePermission)
 
     .get("/invoices/read", getInvoices)
-    .get("/bills/read", getGraphData)
+    .get("/bills/read", GET_graph_data)
 
 export default router;

@@ -54,3 +54,34 @@ export function getCurrencySymbol(currencyName) {
     };
     return currencySymbols[currencyName.toUpperCase()] || "";
 }
+
+// get data of every month
+export function getMonthStartEndDates(startDateStr, endDateStr) {
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+    const startYear = startDate.getFullYear();
+    const endYear = endDate.getFullYear();
+    const startMonth = startDate.getMonth();
+    const endMonth = endDate.getMonth();
+
+    let monthStartEndDates = [];
+
+    for (let year = startYear; year <= endYear; year++) {
+        const monthStart = (year === startYear) ? startMonth : 0;
+        const monthEnd = (year === endYear) ? endMonth : 11;
+
+        for (let month = monthStart; month <= monthEnd; month++) {
+            const monthStartDate = (year === startYear && month === startMonth) ? startDate.getDate() : 1;
+            const monthEndDate = (year === endYear && month === endMonth) ? endDate.getDate() : new Date(year, month + 1, 0).getDate();
+
+            monthStartEndDates.push({
+                startDate: new Date(year, month, monthStartDate).toISOString().slice(0, 10),
+                endDate: new Date(year, month, monthEndDate).toISOString().slice(0, 10),
+            });
+        }
+    }
+
+    return monthStartEndDates;
+}
+
+

@@ -70,21 +70,4 @@ app.listen(port, () => { console.log("server is running on port ", `http://local
 export default app;
 
 
-// function splitMonthIntoDays(month, year) {
-//     // Get the number of days in the month
-//     const numDays = new Date(year, month + 1, 0).getDate();
-
-//     // Loop through each day of the month and do something with the data
-//     for (let day = 1; day <= numDays; day++) {
-//         // Define the start and end times for the day
-//         const startDate = new Date(year, month, day, 0, 0, 0);
-//         const endDate = new Date(year, month, day, 23, 59, 59);
-
-//         // Do something with the data for this day
-//         console.log(`Data for ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`);
-//     }
-// }
-
-// // Example usage:
-// splitMonthIntoDays(2, 2023); // February 2023
 

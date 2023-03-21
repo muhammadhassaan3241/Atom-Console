@@ -16,6 +16,7 @@ export default {
             var paid_user_component_id = '';
             var trial_user_component_id = '';
             var subscription_type = '';
+            var reseller_id;
 
             // @local API headers
             const reseller_billing_headers = { headers: { "Content-Type": "application/json" } }
@@ -34,9 +35,13 @@ export default {
                 await User.findOne({ where: { reseller_id: bill.reseller_id } })
                     .then((user_data) => {
 
+
                         // @check if reseller id in bills data is equal to reseller id in users table
                         (user_data !== null && bill.reseller_id === user_data.reseller_id)
                             ? (async () => {
+
+                                // @reseller id 
+                                reseller_id = user_data.reseller_id;
 
                                 subscription_type = bill.component_slug === 'connected' || bill.component_slug === 'active-account'
                                     ? bill.component_slug
@@ -69,6 +74,7 @@ export default {
                 paid_user_component_id,
                 subscription_type,
                 total_accounts,
+                reseller_id,
             }]
 
             // @return bills that satisfies the conditions
