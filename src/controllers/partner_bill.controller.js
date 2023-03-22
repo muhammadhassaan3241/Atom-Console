@@ -1,6 +1,6 @@
 // packages
 import axios from "axios";
-import { getMonthStartEndDates } from "../middlewares/formatMonth.middleware.js";
+import { getMonthStartEndDates, getMonthYear } from "../middlewares/formatMonth.middleware.js";
 
 // modules
 import Bill_Services from "../services/partner_bill.services.js";
@@ -93,7 +93,7 @@ export const GET_graph_data = async (request, response) => {
                                                 const total_cost_of_active_accounts = active_account_unit_price * total_active_accounts;
 
                                                 month_wise_data.push({
-                                                    time_period: `From: ${startDate} => To: ${endDate}`,
+                                                    time_period: getMonthYear(startDate, endDate),
                                                     details: {
                                                         total_cost_of_active_accounts
                                                     }
@@ -156,29 +156,19 @@ export const GET_graph_data = async (request, response) => {
                                         // @elastic API Url
                                         const url = `${process.env.ELASTIC_SEARCH_BASE_URL}/networklogs/getResellerConnectedUsers?IResellerId=${reseller_id}&sFromDate=${startDate}&sToDate=${endDate}`;
 
-                                        const { data } = await axios.get(url, elastic_search_headers);
+                                        const { data } = await axios.get(url, elastic_search_headers)
+                                        const total_cost_of_paid_accounts = data.body.paid * paid_accounts_unit_price;
+                                        const total_cost_of_trial_accounts = data.body.trial * trial_accounts_unit_price;
 
-                                        (data.body.length === 0)
-                                            ? response.status(status_code).send({
-                                                status: custom_status,
-                                                message: message,
-                                                data: []
-                                            })
-                                            : (async () => {
-                                                const total_cost_of_paid_accounts = data.body.paid * paid_accounts_unit_price;
-                                                const total_cost_of_trial_accounts = data.body.trial * trial_accounts_unit_price;
+                                        month_wise_data.push({
+                                            month: getMonthYear(startDate, endDate),
+                                            paid: total_cost_of_paid_accounts,
+                                            trail: total_cost_of_trial_accounts
+                                        })
 
-                                                month_wise_data.push({
-                                                    time_period: `From: ${startDate} => To: ${endDate}`,
-                                                    details: {
-                                                        total_cost_of_paid_accounts,
-                                                        total_cost_of_trial_accounts
-                                                    }
-                                                })
-                                            })()
+
                                     }
 
-                                    // @sending response to client
                                     response.status(status_code).send({
                                         status: custom_status,
                                         message: message,
@@ -187,6 +177,7 @@ export const GET_graph_data = async (request, response) => {
                                     });
                                 })()
                         }
+
                     })()
 
                     // @if data is null sending response to client

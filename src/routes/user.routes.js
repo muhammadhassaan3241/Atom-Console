@@ -24,12 +24,6 @@ import {
     updatePermission,
     deletePermission
 } from "../controllers/permission.controller.js";
-import {
-    getInvoices
-} from "../controllers/invoice.controller.js";
-import {
-    GET_graph_data
-} from "../controllers/partner_bill.controller.js";
 
 // routes
 router
@@ -50,8 +44,5 @@ router
     .get("/permissions/read/:id", getPermissionById)
     .get("/permissions/update/:id", updatePermission)
     .get("/permissions/delete/:id", deletePermission)
-
-    .get("/invoices/read", getInvoices)
-    .get("/bills/read", GET_graph_data)
 
 export default router;
