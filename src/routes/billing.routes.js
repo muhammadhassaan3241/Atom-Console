@@ -3,9 +3,9 @@ import { Router } from "express";
 const router = Router();
 
 // modules
-import {
-    getGraphData
-} from "../controllers/partner_bill.controller.js";
+// import {
+//     getGraphData
+// } from "../controllers/partner_bill.controller.js";
 import {
     getInvoices,
     getVpnActiveUsers,
@@ -15,7 +15,7 @@ import {
 // routes
 router
     .get("/invoices/read", getInvoices)
-    .get("/bills/read", getGraphData)
+    // .get("/bills/read", getGraphData)
     .get("/active-users/read", getVpnActiveUsers)
     .get("/connected-users/read", getVpnConnectedUsers)
 

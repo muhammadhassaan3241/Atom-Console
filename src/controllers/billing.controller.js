@@ -55,9 +55,9 @@ export const getVpnActiveUsers = async (request, response) => {
 // get all connected user
 export const getVpnConnectedUsers = async (request, response) => {
     try {
-        const query_strings = request.query;
+
         const reseller_id = request.user.reseller_id;
-        Billing.getVpnConnectedUsers(query_strings, reseller_id, (data, statusCode, customStatus, customMessage,) => {
+        Billing.getVpnConnectedUsers(reseller_id, (data, statusCode, customStatus, customMessage,) => {
             return response
                 .status(statusCode)
                 .send({
@@ -74,5 +74,30 @@ export const getVpnConnectedUsers = async (request, response) => {
                 status: "0",
                 message: "Internal Server Error"
             })
+    }
+}
+
+// get graph data
+export const getGraphData = async (request, response) => {
+    try {
+
+        const reseller_id = request.user.reseller_id;
+        const subscription_type = request.user.subscription_type;
+        const query_strings = request.query;
+
+        Billing.getGraphData(reseller_id, subscription_type, query_strings, (data, statusCode, customStatus, customMessage) => {
+            return response
+                .status(statusCode)
+                .send({
+                    status: customStatus,
+                    message: customMessage,
+                    data: data,
+                })
+        })
+
+    } catch (error) {
+        return response.status(500).send({
+            message: "Something Went Wrong"
+        })
     }
 }

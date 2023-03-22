@@ -6,6 +6,7 @@ const router = express.Router();
 import { authenticationMiddleware } from "../middlewares/authentication.middleware.js";
 import { loginUser } from "../controllers/user.controller.js";
 import { loginValidationErroreHandler, loginValidationMiddleware } from "../middlewares/validation.middleware.js";
+import { getUserSubscriptionType } from "../services/billing.services.js";
 
 // login routes
 router
@@ -14,6 +15,7 @@ router
         loginValidationMiddleware,
         loginValidationErroreHandler,
         authenticationMiddleware,
+        getUserSubscriptionType,
         loginUser)
 
 export default router;
