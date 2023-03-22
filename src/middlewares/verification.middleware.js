@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 // module
 import { Permission, Role, User } from "../models/user.model.js";
+import billing from "../services/billing.services.js"
 
 // jwt token verification
 export const jwtVerification = async (request, response, next) => {
@@ -24,13 +25,9 @@ export const jwtVerification = async (request, response, next) => {
             })
             user.token = JSON.stringify(decodedToken);
             await user.save();
-            decodedToken ? (async () => {
-                request.user = user;
-                next()
-            })()
-                : (async () => {
+            request.user = user;
+            next()
 
-                })()
         } else {
             return respond.status(401).send({
                 status: "0",

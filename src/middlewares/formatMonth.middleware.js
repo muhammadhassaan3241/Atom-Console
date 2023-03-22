@@ -84,4 +84,14 @@ export function getMonthStartEndDates(startDateStr, endDateStr) {
     return monthStartEndDates;
 }
 
+export function getMonthYear(start, end) {
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const startDate = new Date(start);
+    const endDate = new Date(end);
 
+
+    // Get the month name and year in the desired format
+    const monthYear = months[endDate.getMonth()] + " " + endDate.getFullYear();
+
+    return monthYear;
+}
