@@ -333,7 +333,6 @@ export default {
             console.log(error);
         }
     },
-
 }
 
 export const getUserSubscriptionType = async (request, response, next) => {

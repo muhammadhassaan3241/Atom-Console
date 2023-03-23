@@ -77,6 +77,7 @@ export const getVpnConnectedUsers = async (request, response) => {
     }
 }
 
+// get graph data
 export const getGraphData = async (request, response) => {
     try {
 
