@@ -81,7 +81,7 @@ export const getGraphData = async (request, response) => {
     try {
 
         const reseller_id = request.user.reseller_id;
-        const subscription_type = request.user.subscription_type;
+        const subscription_type = request.user.subscription;
         const query_strings = request.query;
 
         Billing.getGraphData(reseller_id, subscription_type, query_strings, (data, statusCode, customStatus, customMessage) => {

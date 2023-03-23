@@ -46,7 +46,7 @@ export const User = sequelize.define("User", {
         type: DataTypes.STRING,
         defaultValue: "",
     },
-    subscription_type: {
+    subscription: {
         type: DataTypes.STRING,
         defaultValue: "",
     }

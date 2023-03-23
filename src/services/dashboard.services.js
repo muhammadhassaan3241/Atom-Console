@@ -1,5 +1,5 @@
 import axios from "axios"
-
+import fs from "fs";
 
 export default {
     getMonthlyConnectedUsers: async (resellerId, callback) => {
@@ -24,5 +24,61 @@ export default {
         } catch (error) {
             return callback([], 500, "0", "Internal Server Error")
         }
-    }
+    },
+
+    getProtocolList: async (resellerId, callback) => {
+        try {
+            fs.readFile("connectedProtocolWise.json", (error, data) => {
+                if (error) {
+                    // return callback(body, 404, "0", "Protocol List Not Found")
+                } else {
+                    const body = [];
+                    const jsonData = JSON.parse(data);
+                    jsonData.body.filter((list) => {
+                        body.push({
+                            tunnel_name: list.TunnelTypeName,
+                            total_unique_users: list.TotalUniqueUsers,
+                            total_users: list.TotalUsers,
+                        })
+                    })
+                    return callback(body, 200, "1", "Protocol List Found Successfully")
+                }
+            })
+
+        } catch (error) {
+            return callback([], 500, "0", "Internal Server Error")
+        }
+    },
+
+    getUserSourceContry: async (resellerId, callback) => {
+        try {
+            fs.readFile("getCurrentLoadwrtSources.json", (error, data) => {
+                if (error) {
+                    return callback(body, 404, "0", "User Source Country List Not Found")
+                } else {
+                    const jsonData = JSON.parse(data);
+                    return callback(jsonData.body.slice(0, 12), 200, "1", "User Source Country List Found Successfully")
+                }
+            })
+
+        } catch (error) {
+            return callback([], 500, "0", "Internal Server Error")
+        }
+    },
+
+    getUserDestinationCountry: async (resellerId, callback) => {
+        try {
+            fs.readFile("getCurrentLoadwrtDestination.json", (error, data) => {
+                if (error) {
+                    return callback(body, 404, "0", "User Destination Country List Not Found")
+                } else {
+                    const jsonData = JSON.parse(data);
+                    return callback(jsonData.body.slice(0, 12), 200, "1", "User Destination Country List Found Successfully")
+                }
+            })
+
+        } catch (error) {
+            return callback([], 500, "0", "Internal Server Error")
+        }
+    },
 }

@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "nodemon src/app.js",
-    "test": "cross-env NODE_ENV=test mocha --timeout 10000 src/tests/*.test.js --exit"
+    "test": "cross-env NODE_ENV=test mocha --timeout 10000 src/tests/*.test.js --exit",
+    "coverage": "istanbul cover _mocha"
   },
   "dependencies": {
     "@babel/register": "^7.21.0",
@@ -27,6 +28,7 @@
     "express-rate-limit": "^6.7.0",
     "express-session": "^1.17.3",
     "express-validator": "^6.15.0",
+    "istanbul": "^0.4.5",
     "jest": "^29.5.0",
     "jsonwebtoken": "^9.0.0",
     "memory-cache": "^0.2.0",

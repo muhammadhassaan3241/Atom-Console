@@ -1,0 +1,296 @@
+{
+    "header": {
+        "code": 1,
+        "message": "Data has been fetched Successfully"
+    },
+    "body": [
+        {
+            "destination": "US",
+            "total_users": 9137
+        },
+        {
+            "destination": "GB",
+            "total_users": 3636
+        },
+        {
+            "destination": "CA",
+            "total_users": 1312
+        },
+        {
+            "destination": "DE",
+            "total_users": 3504
+        },
+        {
+            "destination": "SG",
+            "total_users": 822
+        },
+        {
+            "destination": "AU",
+            "total_users": 2084
+        },
+        {
+            "destination": "FR",
+            "total_users": 995
+        },
+        {
+            "destination": "HK",
+            "total_users": 563
+        },
+        {
+            "destination": "MT",
+            "total_users": 25
+        },
+        {
+            "destination": "NL",
+            "total_users": 3002
+        },
+        {
+            "destination": "SE",
+            "total_users": 607
+        },
+        {
+            "destination": "RO",
+            "total_users": 234
+        },
+        {
+            "destination": "CH",
+            "total_users": 455
+        },
+        {
+            "destination": "PA",
+            "total_users": 159
+        },
+        {
+            "destination": "RU",
+            "total_users": 1137
+        },
+        {
+            "destination": "AF",
+            "total_users": 104
+        },
+        {
+            "destination": "BD",
+            "total_users": 66
+        },
+        {
+            "destination": "AO",
+            "total_users": 59
+        },
+        {
+            "destination": "DZ",
+            "total_users": 73
+        },
+        {
+            "destination": "BO",
+            "total_users": 132
+        },
+        {
+            "destination": "IE",
+            "total_users": 232
+        },
+        {
+            "destination": "BB",
+            "total_users": 76
+        },
+        {
+            "destination": "KY",
+            "total_users": 59
+        },
+        {
+            "destination": "LU",
+            "total_users": 292
+        },
+        {
+            "destination": "BM",
+            "total_users": 63
+        },
+        {
+            "destination": "TR",
+            "total_users": 454
+        },
+        {
+            "destination": "BR",
+            "total_users": 153
+        },
+        {
+            "destination": "CR",
+            "total_users": 13
+        },
+        {
+            "destination": "HU",
+            "total_users": 98
+        },
+        {
+            "destination": "EG",
+            "total_users": 40
+        },
+        {
+            "destination": "LV",
+            "total_users": 458
+        },
+        {
+            "destination": "UA",
+            "total_users": 83
+        },
+        {
+            "destination": "IT",
+            "total_users": 494
+        },
+        {
+            "destination": "BG",
+            "total_users": 134
+        },
+        {
+            "destination": "ZA",
+            "total_users": 94
+        },
+        {
+            "destination": "CL",
+            "total_users": 60
+        },
+        {
+            "destination": "ID",
+            "total_users": 10
+        },
+        {
+            "destination": "TW",
+            "total_users": 244
+        },
+        {
+            "destination": "KR",
+            "total_users": 290
+        },
+        {
+            "destination": "JP",
+            "total_users": 474
+        },
+        {
+            "destination": "NZ",
+            "total_users": 168
+        },
+        {
+            "destination": "AR",
+            "total_users": 97
+        },
+        {
+            "destination": "PL",
+            "total_users": 317
+        },
+        {
+            "destination": "CZ",
+            "total_users": 215
+        },
+        {
+            "destination": "BE",
+            "total_users": 665
+        },
+        {
+            "destination": "DK",
+            "total_users": 210
+        },
+        {
+            "destination": "NO",
+            "total_users": 364
+        },
+        {
+            "destination": "VN",
+            "total_users": 239
+        },
+        {
+            "destination": "PH",
+            "total_users": 217
+        },
+        {
+            "destination": "ES",
+            "total_users": 373
+        },
+        {
+            "destination": "FI",
+            "total_users": 767
+        },
+        {
+            "destination": "LT",
+            "total_users": 144
+        },
+        {
+            "destination": "AT",
+            "total_users": 261
+        },
+        {
+            "destination": "SK",
+            "total_users": 126
+        },
+        {
+            "destination": "AL",
+            "total_users": 69
+        },
+        {
+            "destination": "EE",
+            "total_users": 271
+        },
+        {
+            "destination": "MD",
+            "total_users": 107
+        },
+        {
+            "destination": "BN",
+            "total_users": 209
+        },
+        {
+            "destination": "GR",
+            "total_users": 114
+        },
+        {
+            "destination": "IN",
+            "total_users": 557
+        },
+        {
+            "destination": "OM",
+            "total_users": 61
+        },
+        {
+            "destination": "BH",
+            "total_users": 57
+        },
+        {
+            "destination": "RS",
+            "total_users": 146
+        },
+        {
+            "destination": "MC",
+            "total_users": 86
+        },
+        {
+            "destination": "AE",
+            "total_users": 266
+        },
+        {
+            "destination": "NG",
+            "total_users": 82
+        },
+        {
+            "destination": "BS",
+            "total_users": 105
+        },
+        {
+            "destination": "AW",
+            "total_users": 54
+        },
+        {
+            "destination": "PR",
+            "total_users": 87
+        },
+        {
+            "destination": "PT",
+            "total_users": 241
+        },
+        {
+            "destination": "VG",
+            "total_users": 63
+        },
+        {
+            "destination": "CN",
+            "total_users": 1
+        }
+    ]
+}

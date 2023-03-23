@@ -1,0 +1,62 @@
+{
+    "header": {
+        "code": 1,
+        "message": "Data has been fetched Successfully"
+    },
+    "body": [
+        {
+            "TotalUsers": 1705,
+            "TotalUniqueUsers": 1314,
+            "TunnelType": 1,
+            "TunnelTypeName": "PPTP"
+        },
+        {
+            "TotalUsers": 68,
+            "TotalUniqueUsers": 59,
+            "TunnelType": 2,
+            "TunnelTypeName": "L2TP"
+        },
+        {
+            "TotalUsers": 4783,
+            "TotalUniqueUsers": 4182,
+            "TunnelType": 3,
+            "TunnelTypeName": "IKEV2"
+        },
+        {
+            "TotalUsers": 3090,
+            "TotalUniqueUsers": 1411,
+            "TunnelType": 8,
+            "TunnelTypeName": "OPENVPN_TCP"
+        },
+        {
+            "TotalUsers": 11455,
+            "TotalUniqueUsers": 7952,
+            "TunnelType": 9,
+            "TunnelTypeName": "OPENVPN_UDP"
+        },
+        {
+            "TotalUsers": 449,
+            "TotalUniqueUsers": 397,
+            "TunnelType": 12,
+            "TunnelTypeName": "IPSEC"
+        },
+        {
+            "TotalUsers": 12777,
+            "TotalUniqueUsers": 7879,
+            "TunnelType": 14,
+            "TunnelTypeName": "WireGuard"
+        },
+        {
+            "TotalUsers": 4181,
+            "TotalUniqueUsers": 457,
+            "TunnelType": 79617,
+            "TunnelTypeName": "SSTP"
+        },
+        {
+            "TunnelType": 0,
+            "TunnelTypeName": "Online",
+            "TotalUsers": 38508,
+            "TotalUniqueUsers": 23651
+        }
+    ]
+}
