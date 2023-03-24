@@ -7,17 +7,14 @@ import Billing from "../services/billing.services.js";
 // get all invoices
 export const getInvoices = async (request, response) => {
     try {
-        Billing.getInvoices((data, statusCode, customStatus, message) => {
-            return (data !== null)
-                ? response.status(statusCode).send({
+        Billing.getInvoices((data, statusCode, customStatus, customMessage) => {
+            return response
+                .status(statusCode)
+                .send({
                     status: customStatus,
-                    message: message,
-                    data: data
+                    message: customMessage,
+                    data: data,
                 })
-                : response.status(statusCode).send({
-                    status: customStatus,
-                    message: message,
-                });
         });
 
     } catch (error) {
@@ -32,6 +29,7 @@ export const getVpnActiveUsers = async (request, response) => {
     try {
         const query_strings = request.query;
         const reseller_id = request.user.reseller_id;
+
         Billing.getVpnActiveUsers(query_strings, reseller_id, (data, statusCode, customStatus, customMessage,) => {
             return response
                 .status(statusCode)
@@ -55,9 +53,9 @@ export const getVpnActiveUsers = async (request, response) => {
 // get all connected user
 export const getVpnConnectedUsers = async (request, response) => {
     try {
-        const query_strings = request.query;
         const reseller_id = request.user.reseller_id;
-        Billing.getVpnConnectedUsers(query_strings, reseller_id, (data, statusCode, customStatus, customMessage,) => {
+
+        Billing.getVpnConnectedUsers(reseller_id, (data, statusCode, customStatus, customMessage,) => {
             return response
                 .status(statusCode)
                 .send({

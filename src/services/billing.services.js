@@ -1,6 +1,6 @@
 // modules
 import axios from "axios";
-import { formatDateToString, getCurrencySymbol, getformatedInvoiceMonth, getFormattedPaymentDate, getMonthStartEndDates, getMonthYear } from "../middlewares/formatMonth.middleware.js";
+import { getCurrencySymbol, getformatedInvoiceMonth, getFormattedPaymentDate, getMonthStartEndDates, getMonthYear } from "../middlewares/formatMonth.middleware.js";
 import { User } from "../models/user.model.js";
 
 // SUBSCRIPTION_SERVICES
@@ -47,6 +47,7 @@ export default {
 
     getVpnActiveUsers: async (queryStrings, resellerId, callback) => {
 
+        const usernames = [];
         const reseller_id = resellerId;
         const page = queryStrings.page;
         const limit = queryStrings.limit;
@@ -61,39 +62,26 @@ export default {
 
             await axios.get(`${process.env.ATOM_BASE_URL}/vap/v1/listUsers?iResellerId=${reseller_id}&iPage=${page || 1}&iLimit=${limit || 100000}`, active_user_vpn_headers)
                 .then(({ data }) => {
-
                     const body = data.body.data
-                    const usernames = [];
                     body.forEach(element => {
                         usernames.push({ username: element.username })
                     });
-                    return callback(usernames, 200, "1", "Active Users Found Successfully")
-
-                }).catch((e) => {
-                    return callback([], 404, "0", "Active Users Not Found")
                 })
 
+            callback(usernames, 200, "1", "Active Users Found Successfully")
+            return
         } catch (error) {
-            return response
-                .status(500)
-                .send({
-                    status: "0",
-                    message: "Internal Server Error"
-                })
+            return callback([], 404, "0", "Active Users Not Found");
         }
     },
 
-    getVpnConnectedUsers: async (queryStrings, resellerId, callback) => {
+    getVpnConnectedUsers: async (resellerId, callback) => {
+
         const reseller_id = resellerId;
-
         const today = new Date();
-
         const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
         const formattedFirstDay = `${firstDayOfMonth.getFullYear()}-${(firstDayOfMonth.getMonth() + 1).toString().padStart(2, '0')}-${firstDayOfMonth.getDate().toString().padStart(2, '0')}`;
-
         const formattedCurrentDay = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
-
 
         try {
             const connected_user_vpn_headers = {
@@ -109,18 +97,11 @@ export default {
                     body.forEach(element => {
                         usernames.push({ username: element })
                     });
-                    return callback(usernames, 200, "1", "Connected Users Found Successfully")
-                }).catch((e) => {
-                    return callback([], 404, "0", "Connected Users Not Found")
+                    callback(usernames, 200, "1", "Connected Users Found Successfully")
                 })
-
+            return
         } catch (error) {
-            return response
-                .status(500)
-                .send({
-                    status: "0",
-                    message: "Internal Server Error"
-                })
+            return callback([], 404, "0", "Connected Users Not Found")
         }
     },
 
@@ -261,16 +242,16 @@ export default {
                                         name: 'Paid',
                                         month: getMonthYear(startDate, endDate),
                                         total_cost_of_paid_accounts: data.body.paid * paidUserUnitPrice || 0,
+                                        // total_cost_of_trial_accounts: data.body.trial * trialUserUnitPrice || 0,
+                                        // total_cost_of_connected_accounts: data.connected * connectedUserUnitPrice || 0,
+                                    })
+                                    userAccountsTotalCost.push({
+                                        label: 'Trial',
+                                        month: getMonthYear(startDate, endDate),
+                                        // total_cost_of_paid_accounts: data.body.paid * paidUserUnitPrice || 0,
                                         total_cost_of_trial_accounts: data.body.trial * trialUserUnitPrice || 0,
                                         // total_cost_of_connected_accounts: data.connected * connectedUserUnitPrice || 0,
                                     })
-                                    // userAccountsTotalCost.push({
-                                    //     label: 'Trial',
-                                    //     month: getMonthYear(startDate, endDate),
-                                    //     // total_cost_of_paid_accounts: data.body.paid * paidUserUnitPrice || 0,
-                                    //     total_cost_of_trial_accounts: data.body.trial * trialUserUnitPrice || 0,
-                                    //     // total_cost_of_connected_accounts: data.connected * connectedUserUnitPrice || 0,
-                                    // })
                                 })
                         }
                     }
@@ -321,11 +302,12 @@ export default {
                         }
 
                     }
+                    return (userAccountsTotalCost.length > 0)
+                        ? callback(userAccountsTotalCost, 200, "1", "Cost Of Monthly Account Record Found Sucessfully")
+                        : callback(userAccountsTotalCost, 404, "0", "Cost Of Monthly Account Record Not Found")
 
-                    callback(userAccountsTotalCost, 200, "1", "Cost Of Monthly Account Record Found Sucessfully")
-                    return
                 } catch (error) {
-                    callback([], 404, "0", "Cost Of Monthly Account Record Not Found ")
+                    callback([], 500, "0", "Internal Server Error")
                 }
             }))
 

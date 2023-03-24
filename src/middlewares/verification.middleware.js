@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 // module
 import { Permission, Role, User } from "../models/user.model.js";
-import billing from "../services/billing.services.js"
+// import billing from "../services/billing.services.js"
 
 // jwt token verification
 export const jwtVerification = async (request, response, next) => {
@@ -37,8 +37,8 @@ export const jwtVerification = async (request, response, next) => {
         }
 
     } catch (error) {
-        response.status(500).send({
-            message: "Something Went Wrong",
+        response.status(403).send({
+            message: "Forbidden",
         })
     }
 }

@@ -17,12 +17,10 @@ export default {
             await axios.get(`${process.env.ELASTIC_SEARCH_BASE_URL}/networklogs/getResellerConnectedUsers?IResellerId=${reseller_id}&sFromDate=${formattedFirstDay}&sToDate=${formattedCurrentDay}`)
                 .then(({ data }) => {
                     callback(data.body, 200, "1", "Monthly Users Found Successfully")
-                }).catch(() => {
-                    callback([], 404, "0", "Monthly Users Not Found")
                 })
             return
         } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
+            return callback([], 404, "0", "Monthly Users Not Found")
         }
     },
 

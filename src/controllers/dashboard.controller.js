@@ -42,10 +42,9 @@ export const getProtocolList = (request, response) => {
         });
     } catch (error) {
         return response
-            .status(500)
+            .status(403)
             .send({
-                status: "0",
-                message: "Internal Server Error",
+                message: "Forbidden",
             })
     }
 }
