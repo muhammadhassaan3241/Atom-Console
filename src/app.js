@@ -55,13 +55,15 @@ import adminRoutes from "./routes/login.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import billingRoutes from "./routes/billing.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
-import { authorizationMiddleware, authorizedMiddleware } from './middlewares/authorization.middleware.js';
+import vpnManagementRoutes from "./routes/vpn-account-management.routes.js";
+// import { authorizationMiddleware, authorizedMiddleware } from './middlewares/authorization.middleware.js';
 
 
 app.use("/api", adminRoutes);
 app.use("/api", jwtVerification, userRoutes);
 app.use("/api/billing", jwtVerification, billingRoutes);
 app.use("/api/dashboard", jwtVerification, dashboardRoutes);
+app.use("/api/vpn", vpnManagementRoutes);
 
 // 404 routes
 app.use((request, response) => {

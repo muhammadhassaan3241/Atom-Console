@@ -124,7 +124,7 @@ describe("GET /api/dashboard/protocol-list/read", function () {
 
 });
 
-describe("GET /api/dashboard/protocol-list/read", function () {
+describe("GET /api/dashboard/user-source-country/read", function () {
 
     before(async () => {
         const response = await request
@@ -166,7 +166,7 @@ describe("GET /api/dashboard/protocol-list/read", function () {
 
 });
 
-describe("GET /api/dashboard/protocol-list/read", function () {
+describe("GET /api/dashboard/user-destination-country/read", function () {
 
     before(async () => {
         const response = await request

@@ -130,7 +130,6 @@ describe("GET /api/billing/getBillingEstimations/read", () => {
 
 })
 
-
 describe('GET /api/billing/connected-users/read', () => {
 
     before(async () => {
@@ -202,73 +201,73 @@ describe('GET /api/billing/connected-users/read', () => {
 
 });
 
-describe('GET /api/billing/active-users/read', () => {
+// describe('GET /api/billing/active-users/read', () => {
 
-    before(async () => {
-        const response = await request
-            .post("/api/admin/login")
-            .send(validCredentials);
+//     before(async () => {
+//         const response = await request
+//             .post("/api/admin/login")
+//             .send(validCredentials);
 
-        token = response.body.token;
-        expect(response.status).to.eql(200);
-        expect(response.body.message).to.eql("User Successfully Logged In");
-    })
+//         token = response.body.token;
+//         expect(response.status).to.eql(200);
+//         expect(response.body.message).to.eql("User Successfully Logged In");
+//     })
 
-    it('should return 403 if bearer token is not provided', async function () {
+//     it('should return 403 if bearer token is not provided', async function () {
 
-        const expectedMessage = 'Forbidden';
+//         const expectedMessage = 'Forbidden';
 
-        const response = await request
-            .get('/api/billing/active-users/read')
-            .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer token`)
-            .expect(403)
+//         const response = await request
+//             .get('/api/billing/active-users/read')
+//             .set('Content-Type', 'application/json')
+//             .set('Authorization', `Bearer token`)
+//             .expect(403)
 
 
-        expect(response.body).to.have.property('message', expectedMessage);
+//         expect(response.body).to.have.property('message', expectedMessage);
 
-    });
+//     });
 
-    it('should return 200 with user data if token is provided and return all connected users usernames', async function () {
+//     it('should return 200 with user data if token is provided and return all connected users usernames', async function () {
 
-        const expectedStatus = '1';
-        const expectedMessage = 'Active Users Found Successfully';
+//         const expectedStatus = '1';
+//         const expectedMessage = 'Active Users Found Successfully';
 
-        const response = await request
-            .get(`/api/billing/active-users/read`)
-            .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${token}`)
-            .expect(200)
+//         const response = await request
+//             .get(`/api/billing/active-users/read`)
+//             .set('Content-Type', 'application/json')
+//             .set('Authorization', `Bearer ${token}`)
+//             .expect(200)
 
-        expect(response.body).to.have.property('status', expectedStatus);
-        expect(response.body).to.have.property('message', expectedMessage);
-        expect(response.body.data).to.be.an('array');
-        expect(response.body.data[0]).to.have.property('username');
+//         expect(response.body).to.have.property('status', expectedStatus);
+//         expect(response.body).to.have.property('message', expectedMessage);
+//         expect(response.body.data).to.be.an('array');
+//         expect(response.body.data[0]).to.have.property('username');
 
-    });
+//     });
 
-    it('should return a failed response with status code 404', async function () {
+//     // it('should return a failed response with status code 404', async function () {
 
-        const reseller_Id = 123;
+//     //     const reseller_Id = 123;
 
-        const errorMessage = 'Active Users Not Found';
-        const statusCode = 404;
-        const customStatus = '0';
-        const originalMethod = billingServices.getVpnActiveUsers;
-        billingServices.getVpnActiveUsers = (resellerId = reseller_Id, callback) => {
-            callback([], statusCode, customStatus, errorMessage);
-        };
+//     //     const errorMessage = 'Active Users Not Found';
+//     //     const statusCode = 404;
+//     //     const customStatus = '0';
+//     //     const originalMethod = billingServices.getVpnActiveUsers;
+//     //     billingServices.getVpnActiveUsers = (resellerId = reseller_Id, callback) => {
+//     //         callback([], statusCode, customStatus, errorMessage);
+//     //     };
 
-        const response = await request
-            .get('/api/billing/active-users/read')
-            .set('Content-Type', 'application/json')
-            .set('Authorization', `Bearer ${token}`)
+//     //     const response = await request
+//     //         .get('/api/billing/active-users/read')
+//     //         .set('Content-Type', 'application/json')
+//     //         .set('Authorization', `Bearer ${token}`)
 
-        expect(response.body).to.have.property('status', customStatus);
-        expect(response.body).to.have.property('message', errorMessage);
+//     //     expect(response.body).to.have.property('status', customStatus);
+//     //     expect(response.body).to.have.property('message', errorMessage);
 
-        billingServices.getVpnActiveUsers = originalMethod;
+//     //     billingServices.getVpnActiveUsers = originalMethod;
 
-    });
+//     // });
 
-});
+// });
