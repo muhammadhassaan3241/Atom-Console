@@ -10,6 +10,8 @@ import {
     disableVpnUser,
     enableVpnUser,
     extendExpiryOfVpnUser,
+    getVpnUserInventory,
+    getVpnUsers,
     getVpnUserStatus,
     renewVpnUser,
     updatePreferencesofVpnUser,
@@ -26,5 +28,7 @@ router
     .post("/vpn-user/disable", disableVpnUser)
     .post("/vpn-user/create", createVpnUser)
     .post("/vpn-user/updatePreferences", updatePreferencesofVpnUser)
+    .get("/vpn-user/inventory", getVpnUserInventory)
+    .get("/vpn-user/users", getVpnUsers)
 
 export default router;

@@ -183,27 +183,69 @@ export default {
 
     createVpnUserStatus: async (body, callback) => {
         try {
-            const formData = body;
-
-            const headers = {
-                headers:
-                {
-                    "Content-Type": "application/json",
-                    "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
-                }
-            }
-            await axios.post(`${process.env.VAM_BASE_URL}/create`, formData, headers)
-                .then(({ data }) => {
-                    const body = data.body;
-                    if (Object.keys(body).length === 0) {
-                        callback(body, 404, "0", "Invalid Data")
-                    } else {
-                        callback(body, 200, "1", "Vpn User Created Successfully")
+            let concurrentUser, sessionLimit, countries, cities, protocols;
+            const headers = { headers: { "Content-Type": "application/json", "X-AccessToken": process.env.VAP_ACCESS_TOKEN, } };
+            await axios.get(`${process.env.INVENTORY_BASE_URL}/getAllServiceTypes`, headers)
+                .then(async ({ data }) => {
+                    data.body.map((service) => {
+                        if (service.serviceKey === "session_limit") {
+                            sessionLimit = service.serviceId
+                        }
+                        if (service.serviceKey === "concurrent_users") {
+                            concurrentUser = service.serviceId
+                        }
+                        if (service.serviceKey === "protocol") {
+                            protocols = service.serviceId
+                        }
+                        if (service.serviceKey === "country") {
+                            countries = service.serviceId
+                        }
+                        if (service.serviceKey === "city") {
+                            cities = service.serviceId
+                        }
+                    });
+                    let Preference = {
+                        [sessionLimit]: body.session_limit,
+                        [concurrentUser]: body.concurrent_user,
+                        [countries]: body.countries,
+                        [cities]: body.cities,
+                        [protocols]: body.protocols,
                     }
-                })
+
+                    const formData = {
+                        vpnUsername: body.vpnUsername,
+                        vpnPassword: body.vpnPassword,
+                        packageType: body.packageType,
+                        period: body.period,
+                        uuid: body.uuid,
+                        preference: Preference.toString()
+                    }
+
+                    const headers = {
+                        headers:
+                        {
+                            "Content-Type": "application/json",
+                            "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
+                        }
+                    }
+                    console.log(formData);
+                    await axios.post(`${process.env.VAM_BASE_URL}/create`, formData, headers)
+                        .then(({ data }) => {
+                            const body = data.body;
+                            if (Object.keys(body).length === 0) {
+                                callback(body, 404, "0", "Vpn User Not Created")
+                            } else {
+                                callback(body, 200, "1", "Vpn User Created Successfully")
+                            }
+                        }).catch((error) => {
+                            console.error(error);
+                        })
+                }).catch((error) => {
+                    console.error(error);
+                });
             return
         } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
+            // return callback([], 500, "0", "Internal Server Error")
         }
     },
 
@@ -221,7 +263,7 @@ export default {
                 .then(({ data }) => {
                     const body = data.body;
                     if (Object.keys(body).length === 0) {
-                        callback(body, 404, "0", "There Is An Error In updating Preference")
+                        callback(body, 404, "0", "There Is An Error In Updating Preference")
                     } else {
                         callback(body, 200, "1", "Vpn User Preference Updated Successfully")
                     }
@@ -231,4 +273,41 @@ export default {
             return callback([], 500, "0", "Internal Server Error")
         }
     },
+
+    getVpnUserInventory: async (resellerId, callback) => {
+        try {
+            const headers = { headers: { "Content-Type": "application/json", "X-AccessToken": process.env.VAP_ACCESS_TOKEN } };
+            await axios.get(`${process.env.INVENTORY_BASE_URL}/getResellerInventory?iId=${resellerId}`, headers)
+                .then(({ data }) => {
+                    const body = data.body;
+                    if (Object.keys(body).length === 0) {
+                        callback(body, 404, "0", "There Is An Error In Getting Inventory")
+                    } else {
+                        callback(body, 200, "1", "Vpn User Inventory Found Successfully")
+                    }
+                })
+            return
+        } catch (error) {
+            return
+        }
+    },
+
+    getVpnUsers: async (resellerId, callback) => {
+        try {
+            const headers = { headers: { "Content-Type": "application/json", "X-AccessToken": process.env.VAP_ACCESS_TOKEN } };
+            await axios.get(`${process.env.VAP_BASE_URL}/listUsers?iResellerId=${resellerId}&Page=1`, headers)
+                .then(({ data }) => {
+                    const body = data.body;
+                    if (Object.keys(body).length === 0) {
+                        callback(body, 404, "0", "Vpn Users Not Found")
+                    } else {
+                        callback(body, 200, "1", "Vpn Users Found Successfully")
+                    }
+                })
+
+            return
+        } catch (error) {
+            return
+        }
+    }
 }

@@ -63,7 +63,7 @@ app.use("/api", adminRoutes);
 app.use("/api", jwtVerification, userRoutes);
 app.use("/api/billing", jwtVerification, billingRoutes);
 app.use("/api/dashboard", jwtVerification, dashboardRoutes);
-app.use("/api/vpn", vpnManagementRoutes);
+app.use("/api/vpn", jwtVerification, vpnManagementRoutes);
 
 // 404 routes
 app.use((request, response) => {
