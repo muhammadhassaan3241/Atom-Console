@@ -2,6 +2,7 @@
 import axios from "axios";
 import { getCurrencySymbol, getformatedInvoiceMonth, getFormattedPaymentDate, getMonthStartEndDates, getMonthYear } from "../middlewares/formatMonth.middleware.js";
 import { User } from "../models/user.model.js";
+import { getAccessToken } from "../helper/access-token.js";
 
 // SUBSCRIPTION_SERVICES
 
@@ -53,10 +54,11 @@ export default {
         const limit = queryStrings.limit;
 
         try {
+            const accessToken = await getAccessToken(reseller_id)
             const active_user_vpn_headers = {
                 headers: {
                     "Content-Type": "application/json",
-                    "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
+                    "X-AccessToken": accessToken,
                 }
             };
 
@@ -279,10 +281,12 @@ export default {
                                 })
                         }
 
+                        const accessToken = await getAccessToken(resellerId);
+                        console.log(`AccessToken -------->>>>>>> ${accessToken}`);
                         const elasticSearchHeaders = {
                             headers: {
                                 "Content-Type": "application/json",
-                                "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
+                                "X-AccessToken": accessToken,
                             }
                         }
 

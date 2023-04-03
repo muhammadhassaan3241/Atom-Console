@@ -5,7 +5,8 @@ import vpnAccountManagementServices from "../services/vpn-account-management.ser
 export const getVpnUserStatus = async (request, response) => {
     try {
         const username = request.body;
-        await vpnAccountManagementServices.getVpnUserStatus(username, (data, statusCode, customStatus, customMessage) => {
+        const reseller_id = request.user.reseller_id;
+        await vpnAccountManagementServices.getVpnUserStatus(username, reseller_id, (data, statusCode, customStatus, customMessage) => {
             return response
                 .status(statusCode)
                 .send({
@@ -26,7 +27,8 @@ export const getVpnUserStatus = async (request, response) => {
 export const deleteVpnUser = async (request, response) => {
     try {
         const username = request.body;
-        await vpnAccountManagementServices.deleteVpnUserStatus(username, (data, statusCode, customStatus, customMessage) => {
+        const reseller_id = request.user.reseller_id;
+        await vpnAccountManagementServices.deleteVpnUser(username, reseller_id, (data, statusCode, customStatus, customMessage) => {
             return response
                 .status(statusCode)
                 .send({
@@ -47,7 +49,8 @@ export const deleteVpnUser = async (request, response) => {
 export const renewVpnUser = async (request, response) => {
     try {
         const body = request.body;
-        await vpnAccountManagementServices.renewVpnUserStatus(body, (data, statusCode, customStatus, customMessage) => {
+        const reseller_id = request.user.reseller_id;
+        await vpnAccountManagementServices.renewVpnUser(body, reseller_id, (data, statusCode, customStatus, customMessage) => {
             return response
                 .status(statusCode)
                 .send({
@@ -68,7 +71,8 @@ export const renewVpnUser = async (request, response) => {
 export const extendExpiryOfVpnUser = async (request, response) => {
     try {
         const body = request.body;
-        await vpnAccountManagementServices.extendExpiryOfVpnUserStatus(body, (data, statusCode, customStatus, customMessage) => {
+        const reseller_id = request.user.reseller_id;
+        await vpnAccountManagementServices.extendExpiryOfVpnUser(body, reseller_id, (data, statusCode, customStatus, customMessage) => {
             return response
                 .status(statusCode)
                 .send({
@@ -89,7 +93,8 @@ export const extendExpiryOfVpnUser = async (request, response) => {
 export const changePasswordOfVpnUser = async (request, response) => {
     try {
         const body = request.body;
-        await vpnAccountManagementServices.changePasswordOfVpnUserStatus(body, (data, statusCode, customStatus, customMessage) => {
+        const reseller_id = request.user.reseller_id;
+        await vpnAccountManagementServices.changePasswordOfVpnUser(body, reseller_id, (data, statusCode, customStatus, customMessage) => {
             return response
                 .status(statusCode)
                 .send({
@@ -107,31 +112,12 @@ export const changePasswordOfVpnUser = async (request, response) => {
     }
 }
 
-export const enableVpnUser = async (request, response) => {
+export const enable_disableVpnUser = async (request, response) => {
     try {
         const body = request.body;
-        await vpnAccountManagementServices.enableVpnUserStatus(body, (data, statusCode, customStatus, customMessage) => {
-            return response
-                .status(statusCode)
-                .send({
-                    status: customStatus,
-                    message: customMessage,
-                    data: data
-                })
-        })
-    } catch (error) {
-        return response
-            .status(statusCode)
-            .send({
-                message: customMessage,
-            })
-    }
-}
-
-export const disableVpnUser = async (request, response) => {
-    try {
-        const body = request.body;
-        await vpnAccountManagementServices.disableVpnUserStatus(body, (data, statusCode, customStatus, customMessage) => {
+        const action = request.body.action;
+        const reseller_id = request.user.reseller_id;
+        await vpnAccountManagementServices.enable_disableVpnUser(body, action, reseller_id, (data, statusCode, customStatus, customMessage) => {
             return response
                 .status(statusCode)
                 .send({
@@ -152,7 +138,8 @@ export const disableVpnUser = async (request, response) => {
 export const createVpnUser = async (request, response) => {
     try {
         const body = request.body;
-        await vpnAccountManagementServices.createVpnUserStatus(body, (data, statusCode, customStatus, customMessage) => {
+        const reseller_id = request.user.reseller_id;
+        await vpnAccountManagementServices.createVpnUser(body, reseller_id, (data, statusCode, customStatus, customMessage) => {
             return response
                 .status(statusCode)
                 .send({
@@ -173,7 +160,8 @@ export const createVpnUser = async (request, response) => {
 export const updatePreferencesofVpnUser = async (request, response) => {
     try {
         const body = request.body;
-        await vpnAccountManagementServices.updatePreferencesVpnUserStatus(body, (data, statusCode, customStatus, customMessage) => {
+        const reseller_id = request.user.reseller_id;
+        await vpnAccountManagementServices.updatePreferencesVpnUser(body, reseller_id, (data, statusCode, customStatus, customMessage) => {
             return response
                 .status(statusCode)
                 .send({
@@ -222,14 +210,10 @@ export const getVpnUsers = async (request, response) => {
                 .send({
                     status: customStatus,
                     message: customMessage,
-                    data: data
+                    data,
                 })
         })
     } catch (error) {
-        return response
-            .status(statusCode)
-            .send({
-                message: customMessage,
-            })
+        return
     }
 }

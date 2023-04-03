@@ -7,8 +7,7 @@ import {
     changePasswordOfVpnUser,
     createVpnUser,
     deleteVpnUser,
-    disableVpnUser,
-    enableVpnUser,
+    enable_disableVpnUser,
     extendExpiryOfVpnUser,
     getVpnUserInventory,
     getVpnUsers,
@@ -24,8 +23,7 @@ router
     .post("/vpn-user/renew", renewVpnUser)
     .post("/vpn-user/extendExpiry", extendExpiryOfVpnUser)
     .post("/vpn-user/changePassword", changePasswordOfVpnUser)
-    .post("/vpn-user/enable", enableVpnUser)
-    .post("/vpn-user/disable", disableVpnUser)
+    .post("/vpn-user/enable-or-disable", enable_disableVpnUser)
     .post("/vpn-user/create", createVpnUser)
     .post("/vpn-user/updatePreferences", updatePreferencesofVpnUser)
     .get("/vpn-user/inventory", getVpnUserInventory)

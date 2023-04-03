@@ -1,5 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 // db parameters
-export const DBHOST = "localhost"
-export const DBUSER = "root"
-export const DBPASS = ""
-export const DBNAME = "Gaditek"
+export const DBHOST = process.env.DBHOST;
+export const DBUSER = process.env.DBUSER;
+export const DBPASS = process.env.DBPASS;
+export const DBNAME = process.env.DBNAME;

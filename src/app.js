@@ -2,10 +2,8 @@
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-import dotenv from "dotenv";
 import morgan from "morgan";
 import cors from "cors";
-dotenv.config();
 
 // setting up the server 
 import express from 'express';
@@ -18,7 +16,7 @@ import "./databases/connection.js"
 // session
 app.use(session(
     {
-        secret: "5fac284039f4f08d68a40021127ce91de9795c1eaa28d7f5b60725def39fc5925addfd8cecf6a22b1e3dcdb4f1a586ba0cf26235aedd669ab52fbe08bd563d5f",
+        secret: process.env.SESSION_SECRET_KEY,
         resave: false,
         saveUninitialized: false,
         cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 }
@@ -42,6 +40,24 @@ app.use(cors(
 import { apiRequestLimiter } from './middlewares/ratelimit.middleware.js';
 app.use(apiRequestLimiter)
 
+
+
+async function generateAccessToken() {
+    const endpoint = 'https://atomapi.com/auth/v1/accessToken';
+    console.log(endpoint);
+    const secretKey = '365ad6d0293f024503f744a86b3dc1aa0f07fa94';
+    const grantType = 'secret';
+
+    const response = await axios.post(endpoint, {
+        secretKey: secretKey,
+        grantType: grantType,
+    });
+
+    const accessToken = response.data.body.accessToken;
+    return accessToken;
+}
+
+
 // route
 app.get("/", (request, response) => {
     response.send("Gaditek");
@@ -56,6 +72,7 @@ import userRoutes from "./routes/user.routes.js";
 import billingRoutes from "./routes/billing.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import vpnManagementRoutes from "./routes/vpn-account-management.routes.js";
+import { access } from 'fs';
 // import { authorizationMiddleware, authorizedMiddleware } from './middlewares/authorization.middleware.js';
 
 

@@ -1,27 +1,30 @@
 // package
-import axios from "axios"
+import axios from "axios";
+import { getAccessToken } from "../helper/access-token.js";
 
 // VPN_ACCOUNT_MANAGEMENT_SERVICES
 
 // create vpn user
 export default {
-    getVpnUserStatus: async (username, callback) => {
+    getVpnUserStatus: async (username, resellerId, callback) => {
         try {
             const formData = username;
+            const accessToken = await getAccessToken(resellerId)
             const headers = {
                 headers:
                 {
                     "Content-Type": "application/json",
-                    "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
+                    "X-AccessToken": accessToken,
                 }
             }
+            console.log(formData);
             await axios.post(`${process.env.VAM_BASE_URL}/status`, formData, headers)
                 .then(({ data }) => {
                     const body = data.body;
                     if (Object.keys(body).length === 0) {
-                        callback(body, 404, "0", "User Not Found")
+                        callback(body, 404, "0", "VPN Account Not Found")
                     } else {
-                        callback(body, 200, "1", "Vpn User Status Found Successfully")
+                        callback(body, 200, "1", "VPN Account Status Fetched Successfully")
                     }
                 })
             return
@@ -30,23 +33,24 @@ export default {
         }
     },
 
-    deleteVpnUserStatus: async (username, callback) => {
+    deleteVpnUser: async (username, resellerId, callback) => {
         try {
             const formData = username;
+            const accessToken = await getAccessToken(resellerId)
             const headers = {
                 headers:
                 {
                     "Content-Type": "application/json",
-                    "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
+                    "X-AccessToken": accessToken,
                 }
             }
             await axios.post(`${process.env.VAM_BASE_URL}/delete`, formData, headers)
                 .then(({ data }) => {
                     const body = data.body;
                     if (Object.keys(body).length === 0) {
-                        callback(body, 404, "0", "User Not Found")
+                        callback(body, 404, "0", "VPN User Not Found")
                     } else {
-                        callback(body, 200, "1", "Vpn User Deleted Successfully")
+                        callback(body, 200, "1", "VPN User Deleted Successfully")
                     }
                 })
             return
@@ -55,14 +59,15 @@ export default {
         }
     },
 
-    renewVpnUserStatus: async (body, callback) => {
+    renewVpnUser: async (body, resellerId, callback) => {
         try {
             const formData = body;
+            const accessToken = await getAccessToken(resellerId)
             const headers = {
                 headers:
                 {
                     "Content-Type": "application/json",
-                    "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
+                    "X-AccessToken": accessToken,
                 }
             }
 
@@ -72,7 +77,7 @@ export default {
                     if (Object.keys(body).length === 0) {
                         callback(body, 404, "0", "You Can Renew Account When 10 or Less Days Are Remaining")
                     } else {
-                        callback(body, 200, "1", "Vpn User Account Renewed Successfully")
+                        callback(body, 200, "1", "VPN Account Renewed Successfully")
                     }
                 })
             return
@@ -81,23 +86,24 @@ export default {
         }
     },
 
-    extendExpiryOfVpnUserStatus: async (username, callback) => {
+    extendExpiryOfVpnUser: async (username, resellerId, callback) => {
         try {
             const formData = username;
+            const accessToken = await getAccessToken(resellerId)
             const headers = {
                 headers:
                 {
                     "Content-Type": "application/json",
-                    "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
+                    "X-AccessToken": accessToken,
                 }
             }
             await axios.post(`${process.env.VAM_BASE_URL}/extendExpiry`, formData, headers)
                 .then(({ data }) => {
                     const body = data.body;
                     if (Object.keys(body).length === 0) {
-                        callback(body, 404, "0", "User Not Found")
+                        callback(body, 404, "0", "VPN Account Not Found")
                     } else {
-                        callback(body, 200, "1", "Vpn User Expiry Date Extended Successfully")
+                        callback(body, 200, "1", "VPN Account Expiry Date Extended Successfully")
                     }
                 })
             return
@@ -106,23 +112,24 @@ export default {
         }
     },
 
-    changePasswordOfVpnUserStatus: async (body, callback) => {
+    changePasswordOfVpnUser: async (body, resellerId, callback) => {
         try {
             const formData = body;
+            const accessToken = await getAccessToken(resellerId)
             const headers = {
                 headers:
                 {
                     "Content-Type": "application/json",
-                    "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
+                    "X-AccessToken": accessToken,
                 }
             }
             await axios.post(`${process.env.VAM_BASE_URL}/changePassword`, formData, headers)
                 .then(({ data }) => {
                     const body = data.body;
                     if (Object.keys(body).length === 0) {
-                        callback(body, 404, "0", "User Not Found")
+                        callback(body, 404, "0", "VPN Account Not Found")
                     } else {
-                        callback(body, 200, "1", "Vpn User Password Changed Successfully")
+                        callback(body, 200, "1", "VPN Account Password Changed Successfully")
                     }
                 })
             return
@@ -131,60 +138,57 @@ export default {
         }
     },
 
-    enableVpnUserStatus: async (body, callback) => {
+    enable_disableVpnUser: async (body, action, resellerId, callback) => {
         try {
             const formData = body;
+            const accessToken = await getAccessToken(resellerId)
             const headers = {
                 headers:
                 {
                     "Content-Type": "application/json",
-                    "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
+                    "X-AccessToken": accessToken,
                 }
             }
-            await axios.post(`${process.env.VAM_BASE_URL}/enable`, formData, headers)
-                .then(({ data }) => {
-                    const body = data.body;
-                    if (Object.keys(body).length === 0) {
-                        callback(body, 404, "0", "User Not Found")
-                    } else {
-                        callback(body, 200, "1", "Vpn User Enabled Successfully")
-                    }
-                })
-            return
+            if (action === "enable") {
+                await axios.post(`${process.env.VAM_BASE_URL}/enable`, formData, headers)
+                    .then(({ data }) => {
+                        const body = data.body;
+                        if (Object.keys(body).length === 0) {
+                            callback(body, 404, "0", "VPN Account Not Found")
+                        } else {
+                            callback(body, 200, "1", "VPN Account Enabled Successfully")
+                        }
+                    })
+            }
+            else if (action === "disable") {
+                await axios.post(`${process.env.VAM_BASE_URL}/disable`, formData, headers)
+                    .then(({ data }) => {
+                        const body = data.body;
+                        if (Object.keys(body).length === 0) {
+                            callback(body, 404, "0", "VPN Account Not Found")
+                        } else {
+                            callback(body, 200, "1", "VPN Account Disabled Successfully")
+                        }
+                    })
+            }
+
         } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
+
         }
     },
 
-    disableVpnUserStatus: async (body, callback) => {
+    createVpnUser: async (body, resellerId, callback) => {
         try {
-            const formData = body;
-            const headers = {
-                headers:
-                {
-                    "Content-Type": "application/json",
-                    "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
-                }
-            }
-            await axios.post(`${process.env.VAM_BASE_URL}/disable`, formData, headers)
-                .then(({ data }) => {
-                    const body = data.body;
-                    if (Object.keys(body).length === 0) {
-                        callback(body, 404, "0", "User Not Found")
-                    } else {
-                        callback(body, 200, "1", "Vpn User Disabled Successfully")
-                    }
-                })
-            return
-        } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
-        }
-    },
-
-    createVpnUserStatus: async (body, callback) => {
-        try {
+            console.log(resellerId);
             let concurrentUser, sessionLimit, countries, cities, protocols;
-            const headers = { headers: { "Content-Type": "application/json", "X-AccessToken": process.env.VAP_ACCESS_TOKEN, } };
+            const accessToken = await getAccessToken(resellerId);
+            const headers = {
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "X-AccessToken": accessToken,
+                }
+            }
             await axios.get(`${process.env.INVENTORY_BASE_URL}/getAllServiceTypes`, headers)
                 .then(async ({ data }) => {
                     data.body.map((service) => {
@@ -204,7 +208,8 @@ export default {
                             cities = service.serviceId
                         }
                     });
-                    let Preference = {
+
+                    const preference = {
                         [sessionLimit]: body.session_limit,
                         [concurrentUser]: body.concurrent_user,
                         [countries]: body.countries,
@@ -218,45 +223,33 @@ export default {
                         packageType: body.packageType,
                         period: body.period,
                         uuid: body.uuid,
-                        preference: Preference.toString()
+                        preference,
                     }
-
-                    const headers = {
-                        headers:
-                        {
-                            "Content-Type": "application/json",
-                            "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
-                        }
-                    }
-                    console.log(formData);
                     await axios.post(`${process.env.VAM_BASE_URL}/create`, formData, headers)
                         .then(({ data }) => {
                             const body = data.body;
                             if (Object.keys(body).length === 0) {
-                                callback(body, 404, "0", "Vpn User Not Created")
+                                callback(body, 404, "0", "VPN Account Not Created")
                             } else {
-                                callback(body, 200, "1", "Vpn User Created Successfully")
+                                callback(body, 200, "1", "VPN Account Created Successfully")
                             }
-                        }).catch((error) => {
-                            console.error(error);
                         })
-                }).catch((error) => {
-                    console.error(error);
-                });
+                })
             return
         } catch (error) {
-            // return callback([], 500, "0", "Internal Server Error")
+            return callback([], 500, "0", "Internal Server Error")
         }
     },
 
-    updatePreferencesVpnUserStatus: async (body, callback) => {
+    updatePreferencesVpnUser: async (body, resellerId, callback) => {
         try {
             const formData = body;
+            const accessToken = await getAccessToken(resellerId)
             const headers = {
                 headers:
                 {
                     "Content-Type": "application/json",
-                    "X-AccessToken": process.env.VAP_ACCESS_TOKEN,
+                    "X-AccessToken": accessToken,
                 }
             }
             await axios.post(`${process.env.VAM_BASE_URL}/updatePreferences`, formData, headers)
@@ -265,7 +258,7 @@ export default {
                     if (Object.keys(body).length === 0) {
                         callback(body, 404, "0", "There Is An Error In Updating Preference")
                     } else {
-                        callback(body, 200, "1", "Vpn User Preference Updated Successfully")
+                        callback(body, 200, "1", "VPN Account Preference Updated Successfully")
                     }
                 })
             return
@@ -276,14 +269,21 @@ export default {
 
     getVpnUserInventory: async (resellerId, callback) => {
         try {
-            const headers = { headers: { "Content-Type": "application/json", "X-AccessToken": process.env.VAP_ACCESS_TOKEN } };
+            const accessToken = await getAccessToken(resellerId)
+            const headers = {
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "X-AccessToken": accessToken,
+                }
+            }
             await axios.get(`${process.env.INVENTORY_BASE_URL}/getResellerInventory?iId=${resellerId}`, headers)
                 .then(({ data }) => {
                     const body = data.body;
                     if (Object.keys(body).length === 0) {
                         callback(body, 404, "0", "There Is An Error In Getting Inventory")
                     } else {
-                        callback(body, 200, "1", "Vpn User Inventory Found Successfully")
+                        callback(body, 200, "1", "VPN Account Inventory Found Successfully")
                     }
                 })
             return
@@ -294,20 +294,27 @@ export default {
 
     getVpnUsers: async (resellerId, callback) => {
         try {
-            const headers = { headers: { "Content-Type": "application/json", "X-AccessToken": process.env.VAP_ACCESS_TOKEN } };
+            const accessToken = await getAccessToken(resellerId)
+            const headers = {
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    "X-AccessToken": accessToken,
+                }
+            }
             await axios.get(`${process.env.VAP_BASE_URL}/listUsers?iResellerId=${resellerId}&Page=1`, headers)
                 .then(({ data }) => {
                     const body = data.body;
                     if (Object.keys(body).length === 0) {
-                        callback(body, 404, "0", "Vpn Users Not Found")
+                        callback(body.data, 404, "0", "VPN Account Users Not Found")
                     } else {
-                        callback(body, 200, "1", "Vpn Users Found Successfully")
+                        callback(body.data, 200, "1", "VPN Account Users Found Successfully")
                     }
                 })
 
             return
         } catch (error) {
-            return
+            return callback([], 500, "0", "VPN Account Users Found Successfully")
         }
     }
 }

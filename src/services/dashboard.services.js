@@ -28,7 +28,7 @@ export default {
         try {
             fs.readFile("connectedProtocolWise.json", (error, data) => {
                 if (error) {
-                    // return callback(body, 404, "0", "Protocol List Not Found")
+                    callback(body, 404, "0", "Protocol List Not Found")
                 } else {
                     const body = [];
                     const jsonData = JSON.parse(data);
@@ -39,10 +39,10 @@ export default {
                             total_users: list.TotalUsers,
                         })
                     })
-                    return callback(body, 200, "1", "Protocol List Found Successfully")
+                    callback(body, 200, "1", "Protocol List Found Successfully")
                 }
             })
-
+            return
         } catch (error) {
             return callback([], 500, "0", "Internal Server Error")
         }
@@ -68,13 +68,13 @@ export default {
         try {
             fs.readFile("getCurrentLoadwrtDestination.json", (error, data) => {
                 if (error) {
-                    return callback(body, 404, "0", "User Destination Country List Not Found")
+                    callback(body, 404, "0", "User Destination Country List Not Found")
                 } else {
                     const jsonData = JSON.parse(data);
-                    return callback(jsonData.body.slice(0, 12), 200, "1", "User Destination Country List Found Successfully")
+                    callback(jsonData.body.slice(0, 12), 200, "1", "User Destination Country List Found Successfully")
                 }
             })
-
+            return
         } catch (error) {
             return callback([], 500, "0", "Internal Server Error")
         }

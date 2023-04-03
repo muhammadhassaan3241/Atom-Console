@@ -48,6 +48,7 @@
     "should": "^13.2.3",
     "superagent": "^8.0.9",
     "supertest": "^6.3.3",
+    "util": "^0.12.5",
     "winston": "^3.8.2",
     "winston-mongodb": "^5.1.1"
   },
