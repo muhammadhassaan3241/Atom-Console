@@ -302,6 +302,7 @@ export default {
                     "X-AccessToken": accessToken,
                 }
             }
+            return
             await axios.get(`${process.env.VAP_BASE_URL}/listUsers?iResellerId=${resellerId}&Page=1`, headers)
                 .then(({ data }) => {
                     const body = data.body;
