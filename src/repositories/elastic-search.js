@@ -1,20 +1,22 @@
-const { default: axios } = require("axios")
-const { statusCode } = require("../constants/header-code");
-const { headerMessage } = require("../constants/header-message");
+const { default: axios } = require("axios");
 
+class ElasticSeacrchRepository {
+  async getResellerConnectedUsers(queryStrings, headers) {
+    const { data } = await axios.get(
+      `${process.env.ELASTIC_SEARCH_BASE_URL}/networklogs/getResellerConnectedUsers${queryStrings}`,
+      { headers }
+    );
+    return data;
+  }
 
-exports.getElasticSearchData = async (url, queryString, headers) => {
-    try {
+  async getresellerConnectedUsersList(queryStrings, headers) {
+    const { data } = await axios.get(
+      `${process.env.ELASTIC_SEARCH_BASE_URL}/networklogs/getResellerConnectedUsersList${queryStrings}`,
+      { headers }
+    );
+    return data;
+  }
+}
 
-        await axios.get(`${process.env.ELASTIC_SEARCH_BASE_URL}${url}${queryString}`, headers)
-            .then(({ data }) => {
-                const body = data.body;
-                return body;
-            })
-
-    } catch (error) {
-        const code = statusCode.someThingWentWrong;
-        const message = headerMessage.someThingWentWrong;
-        return { code, message };
-    }
-};
+const elasticSearchInstance = new ElasticSeacrchRepository();
+module.exports = elasticSearchInstance;

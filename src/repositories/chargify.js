@@ -1,20 +1,23 @@
-const { default: axios } = require("axios")
-const { statusCode } = require("../constants/header-code");
-const { headerMessage } = require("../constants/header-message");
+const { default: axios } = require("axios");
 
+class ChargifyRepository {
+  async invoices(headers) {
+    const { data } = await axios.get(
+      `${process.env.CHARGIFY_BASE_URL}/invoices.json`,
+      { headers }
+    );
+    return data;
+  }
 
-exports.getChargifyData = async (url, queryStrings, headers) => {
-    try {
+  async price_points(componentId, headers) {
+    const { data } = await axios.get(
+      `${process.env.CHARGIFY_BASE_URL}/components/${componentId}/price_points.json`,
+      { headers }
+    );
+    console.log(data);
+    return data;
+  }
+}
 
-        await axios.get(`${process.env.CHARGIFY_BASE_URL}${url}${queryStrings}`, headers)
-            .then(({ data }) => {
-                const body = data.body;
-                return body;
-            })
-
-    } catch (error) {
-        const code = statusCode.someThingWentWrong;
-        const message = headerMessage.someThingWentWrong;
-        return { code, message };
-    }
-};
+const chargifyInstance = new ChargifyRepository();
+module.exports = chargifyInstance;

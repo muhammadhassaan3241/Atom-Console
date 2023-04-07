@@ -1,20 +1,14 @@
-const { default: axios } = require("axios")
-const { statusCode } = require("../constants/header-code");
-const { headerMessage } = require("../constants/header-message");
+const { default: axios } = require("axios");
 
+class PartnerBillingRepository {
+  async resellerBilling(headers) {
+    const { data } = await axios.get(
+      `${process.env.PARTNER_BILLING_BASE_URL}/reseller/billing`,
+      { headers }
+    );
+    return data;
+  }
+}
 
-exports.getPartnerBillingData = async (url, queryString, headers) => {
-    try {
-
-        await axios.get(`${process.env.PARTNER_BILL_BASE_URL}${url}${queryString}`, headers)
-            .then(({ data }) => {
-                const body = data.body;
-                return body;
-            })
-
-    } catch (error) {
-        const code = statusCode.someThingWentWrong;
-        const message = headerMessage.someThingWentWrong;
-        return { code, message }
-    }
-};
+const partnerBillingInstance = new PartnerBillingRepository();
+module.exports = partnerBillingInstance;

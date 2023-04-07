@@ -1,22 +1,22 @@
-const fs = require("fs")
+const fs = require("fs");
 const { statusCode } = require("../constants/header-code");
 const { headerMessage } = require("../constants/header-message");
 
+class FileManagerRepository {
+  async readFile(filePath) {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, (error, data) => {
+        if (error) {
+          reject({
+            code: statusCode.notFound,
+            message: headerMessage.notFound,
+          });
+        }
+        resolve(data);
+      });
+    });
+  }
+}
 
-exports.getFileData = async (filePath) => {
-    try {
-
-        fs.readFile(filePath, (error, data) => {
-            if (error) {
-                return { code: statusCode.notFound, message: headerMessage.notFound }
-            }
-
-            return data;
-        })
-
-    } catch (error) {
-        const code = statusCode.someThingWentWrong;
-        const message = headerMessage.someThingWentWrong;
-        return { code, message };
-    }
-};
+const fileManagerInstance = new FileManagerRepository();
+module.exports = fileManagerInstance;

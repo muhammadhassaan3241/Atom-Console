@@ -1,241 +1,252 @@
-const { atomVamURL } = require("../constants/constant");
 const { statusCode } = require("../constants/header-code");
 const { headerMessage } = require("../constants/header-message");
 const { getAccessToken } = require("../constants/redis");
-const { getAtomData } = require("../repositories/atom");
-
-
+const {
+  atomInventoryInstance,
+  atomVamInstance,
+} = require("../repositories/atom");
 
 module.exports = {
+  status: async (resellerId, formData, callback) => {
+    try {
+      const accessToken = await getAccessToken(resellerId);
 
-    getVpnAccountStatus: async (resellerId, formData, callback) => {
-        try {
+      const status = await atomVamInstance.status(formData, {
+        "Content-Type": "application/json",
+        "X-AccessToken": accessToken,
+      });
 
-            const accessToken = await getAccessToken(resellerId);
-            const vpnAccountStatus = await getAtomData(
-                atomVamURL.getVpnAccountStatus,
-                "?",
-                formData,
-                {
-                    "Content-Type": "application/json",
-                    "X-AccessToken": accessToken,
-                }
-            );
+      return callback(status);
+    } catch (error) {
+      let code = statusCode.notFound;
+      let message = headerMessage.notFound;
+      return { code, message };
+    }
+  },
 
-            return callback(vpnAccountStatus);
+  remove: async (resellerId, formData, callback) => {
+    try {
+      const accessToken = await getAccessToken(resellerId);
+      const remove = await atomVamInstance.delete(formData, {
+        "Content-Type": "application/json",
+        "X-AccessToken": accessToken,
+      });
 
+      return callback(remove);
+    } catch (error) {
+      let code = statusCode.notFound;
+      let message = headerMessage.notFound;
+      return { code, message };
+    }
+  },
 
-        } catch (error) {
-            let code = statusCode.notFound;
-            let message = headerMessage.notFound;
-            return { code, message }
+  renew: async (resellerId, formData, callback) => {
+    try {
+      const accessToken = await getAccessToken(resellerId);
+      const renew = await atomVamInstance.renew(formData, {
+        "Content-Type": "application/json",
+        "X-AccessToken": accessToken,
+      });
+
+      return callback(renew);
+    } catch (error) {
+      let code = statusCode.notFound;
+      let message = headerMessage.notFound;
+      return { code, message };
+    }
+  },
+
+  create: async (resellerId, body, callback) => {
+    try {
+      let concurrentUser, sessionLimit, countries, cities, protocols;
+      const accessToken = await getAccessToken(resellerId);
+      const headers = {
+        headers: {
+          "Content-Type": "application/json",
+          "X-AccessToken": accessToken,
+        },
+      };
+      await axios.get(
+        `${process.env.ATOM_BASE_URL}/getAllServiceTypes`,
+        headers
+      );
+      const serviceTypes = await atomInventoryInstance.getAllServiceTypes({
+        "Content-Type": "application/json",
+        "X-AccessToken": accessToken,
+      });
+      serviceTypes.body.map((service) => {
+        if (service.serviceKey === "session_limit") {
+          sessionLimit = service.serviceId;
         }
-    },
-
-    deleteVpnAccount: async (resellerId, formData, callback) => {
-        try {
-
-            const accessToken = await getAccessToken(resellerId);
-            const deleteVpnAccount = await getAtomData(
-                atomVamURL.deleteVpnAccount,
-                "?",
-                formData,
-                {
-                    "Content-Type": "application/json",
-                    "X-AccessToken": accessToken,
-                }
-            );
-
-            return callback(deleteVpnAccount);
-
-        } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
+        if (service.serviceKey === "concurrent_users") {
+          concurrentUser = service.serviceId;
         }
-    },
-
-    renewVpnAccount: async (resellerId, formData, callback) => {
-        try {
-
-            const accessToken = await getAccessToken(resellerId);
-            const renewVpnAccount = await getAtomData(
-                atomVamURL.renewVpnAccount,
-                "?",
-                formData,
-                {
-                    "Content-Type": "application/json",
-                    "X-AccessToken": accessToken,
-                }
-            );
-
-            return callback(renewVpnAccount);
-
-        } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
+        if (service.serviceKey === "protocol") {
+          protocols = service.serviceId;
         }
-    },
-
-    createVpnAccount: async (resellerId, formData, callback) => {
-        try {
-
-            const accessToken = await getAccessToken(resellerId);
-            const createVpnAccount = await getAtomData(
-                atomVamURL.createVpnAccount,
-                "?",
-                formData,
-                {
-                    "Content-Type": "application/json",
-                    "X-AccessToken": accessToken,
-                }
-            );
-
-            return callback(createVpnAccount);
-
-        } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
+        if (service.serviceKey === "country") {
+          countries = service.serviceId;
         }
-    },
-
-    extendExpiryOfVpnAccount: async (resellerId, formData, callback) => {
-        try {
-
-            const accessToken = await getAccessToken(resellerId);
-            const extendExpiryVpnAccount = await getAtomData(
-                atomVamURL.extendExpiryOfVpnAccount,
-                "?",
-                formData,
-                {
-                    "Content-Type": "application/json",
-                    "X-AccessToken": accessToken,
-                }
-            );
-
-            return callback(extendExpiryVpnAccount);
-
-        } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
+        if (service.serviceKey === "city") {
+          cities = service.serviceId;
         }
-    },
+      });
 
-    changePasswordOfVpnAccount: async (resellerId, formData, callback) => {
-        try {
+      const preference = {
+        [sessionLimit]: body.session_limit,
+        [concurrentUser]: body.concurrent_user,
+        [countries]: body.countries,
+        [cities]: body.cities,
+        [protocols]: body.protocols,
+      };
 
-            const accessToken = await getAccessToken(resellerId);
-            const changePasswordOfVpnAccount = await getAtomData(
-                atomVamURL.changePasswordOfVpnAccount,
-                "?",
-                formData,
-                {
-                    "Content-Type": "application/json",
-                    "X-AccessToken": accessToken,
-                }
-            );
+      const formData = {
+        vpnUsername: body.vpnUsername,
+        vpnPassword: body.vpnPassword,
+        packageType: body.packageType,
+        period: body.period,
+        uuid: body.uuid,
+        preference,
+      };
 
-            return callback(changePasswordOfVpnAccount);
+      const renew = await atomVamInstance.create(formData, {
+        "Content-Type": "application/json",
+        "X-AccessToken": accessToken,
+      });
 
-        } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
+      return callback(renew);
+    } catch (error) {
+      let code = statusCode.notFound;
+      let message = headerMessage.notFound;
+      return { code, message };
+    }
+  },
+
+  extendExpiry: async (resellerId, formData, callback) => {
+    try {
+      const accessToken = await getAccessToken(resellerId);
+      const extendExpiry = await atomVamInstance.extendExpiry(formData, {
+        "Content-Type": "application/json",
+        "X-AccessToken": accessToken,
+      });
+
+      return callback(extendExpiry);
+    } catch (error) {
+      let code = statusCode.notFound;
+      let message = headerMessage.notFound;
+      return { code, message };
+    }
+  },
+
+  changePassword: async (resellerId, formData, callback) => {
+    try {
+      const accessToken = await getAccessToken(resellerId);
+      const changePassword = await atomVamInstance.changePassword(formData, {
+        "Content-Type": "application/json",
+        "X-AccessToken": accessToken,
+      });
+
+      return callback(changePassword);
+    } catch (error) {
+      let code = statusCode.notFound;
+      let message = headerMessage.notFound;
+      return { code, message };
+    }
+  },
+
+  updatePreferences: async (resellerId, formData, callback) => {
+    try {
+      const accessToken = await getAccessToken(resellerId);
+      const updatePreferences = await atomVamInstance.updatePreferences(
+        formData,
+        {
+          "Content-Type": "application/json",
+          "X-AccessToken": accessToken,
         }
-    },
+      );
 
-    updatePreferenceOfVpnAccount: async (resellerId, formData, callback) => {
-        try {
+      return callback(updatePreferences);
+    } catch (error) {
+      let code = statusCode.notFound;
+      let message = headerMessage.notFound;
+      return { code, message };
+    }
+  },
 
-            const accessToken = await getAccessToken(resellerId);
-            const updatePreferenceOfVpnAccount = await getAtomData(
-                atomVamURL.updatePreferencesOfVpnAccount,
-                "?",
-                formData,
-                {
-                    "Content-Type": "application/json",
-                    "X-AccessToken": accessToken,
-                }
-            );
+  enableOrDisable: async (resellerId, formData, callback) => {
+    try {
+      if (formData.action === "enable") {
+        const accessToken = await getAccessToken(resellerId);
+        const enable = await atomVamInstance.enable(formData, {
+          "Content-Type": "application/json",
+          "X-AccessToken": accessToken,
+        });
+        return callback(enable);
+      } else if (formData.action === "disable") {
+        const accessToken = await getAccessToken(resellerId);
+        const disable = await atomVamInstance.disable(formData, {
+          "Content-Type": "application/json",
+          "X-AccessToken": accessToken,
+        });
+        return callback(disable);
+      }
+    } catch (error) {
+      let code = statusCode.notFound;
+      let message = headerMessage.notFound;
+      return { code, message };
+    }
+  },
 
-            return callback(updatePreferenceOfVpnAccount);
+  getResellerInventory: async (resellerId, callback) => {
+    try {
+      const accessToken = await getAccessToken(resellerId);
+      const getResellerInventory = await atomVamInstance.getResellerInventory({
+        "Content-Type": "application/json",
+        "X-AccessToken": accessToken,
+      });
 
-        } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
-        }
-    },
+      return callback(getResellerInventory);
+    } catch (error) {
+      let code = statusCode.notFound;
+      let message = headerMessage.notFound;
+      return { code, message };
+    }
+  },
 
-    enableOrDisableVpnAccount: async (resellerId, formData, callback) => {
-        try {
+  listUsers: async (resellerId, callback) => {
+    try {
+      const accessToken = await getAccessToken(resellerId);
+      const listUsers = await atomVamInstance.listUsers({
+        "Content-Type": "application/json",
+        "X-AccessToken": accessToken,
+      });
 
-            if (formData.action === "enable") {
-                const accessToken = await getAccessToken(resellerId);
-                const enableVpnAccount = await getAtomData(
-                    atomVamURL.enableVpnAccount,
-                    "?",
-                    formData,
-                    {
-                        "Content-Type": "application/json",
-                        "X-AccessToken": accessToken,
-                    }
-                );
+      return callback(listUsers);
+    } catch (error) {
+      let code = statusCode.notFound;
+      let message = headerMessage.notFound;
+      return { code, message };
+    }
+  },
 
-                return callback(enableVpnAccount);
-            }
-            else if (formData.action === "disable") {
-                const accessToken = await getAccessToken(resellerId);
-                const disableVpnAccount = await getAtomData(
-                    atomVamURL.disableVpnAccount,
-                    "?",
-                    formData,
-                    {
-                        "Content-Type": "application/json",
-                        "X-AccessToken": accessToken,
-                    }
-                );
-
-                return callback(disableVpnAccount);
-            }
-
-
-        } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
-        }
-    },
-
-    getVpnUserInventory: async (resellerId, formData, callback) => {
-        try {
-
-            const accessToken = await getAccessToken(resellerId);
-            const userInventory = await getAtomData(
-                atomVamURL.getUserInventory,
-                "?",
-                formData,
-                {
-                    "Content-Type": "application/json",
-                    "X-AccessToken": accessToken,
-                }
-            );
-
-            return callback(userInventory);
-
-        } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
-        }
-    },
-
-    getVpnUsers: async (resellerId, formData, callback) => {
-        try {
-
-            const accessToken = await getAccessToken(resellerId);
-            const vpnUsers = await getAtomData(
-                atomVamURL.getUsers,
-                "?",
-                formData,
-                {
-                    "Content-Type": "application/json",
-                    "X-AccessToken": accessToken,
-                }
-            );
-
-            return callback(vpnUsers);
-
-        } catch (error) {
-            return callback([], 500, "0", "Internal Server Error")
-        }
-    },
-
-}
+  getAllServiceTypes: async (resellerId, callback) => {
+    try {
+      const accessToken = await getAccessToken(resellerId);
+      const serviceTypes = await atomInventoryInstance.getAllServiceTypes({
+        "Content-Type": "application/json",
+        "X-AccessToken": accessToken,
+      });
+      if (serviceTypes.body.length > 0) {
+        return callback(serviceTypes.body);
+      } else {
+        return callback([]);
+      }
+    } catch (error) {
+      return {
+        code: statusCode.someThingWentWrong,
+        status: "0",
+        message: headerMessage.someThingWentWrong,
+      };
+    }
+  },
+};

@@ -1,18 +1,22 @@
-// package
-import { body, validationResult } from 'express-validator';
+const { body, validationResult } = require("express-validator");
 
-export const loginValidationMiddleware = [
-    body('email').notEmpty().withMessage('email is required'),
-    body('email').isEmail().withMessage('invalid email format'),
-    body('password').notEmpty().withMessage('password is required'),
+const loginValidationMiddleware = [
+  body("email").notEmpty().withMessage("email is required"),
+  body("email").isEmail().withMessage("invalid email format"),
+  body("password").notEmpty().withMessage("password is required"),
 ];
 
-export const loginValidationErroreHandler = async (request, response, next) => {
-    const errors = validationResult(request);
-    !errors.isEmpty()
-        ? response.status(400).send({
-            message: 'Invalid Parameters',
-            data: errors.array(),
-        })
-        : next();
+const loginValidationErroreHandler = async (request, response, next) => {
+  const errors = validationResult(request);
+  !errors.isEmpty()
+    ? response.status(400).send({
+        message: "Invalid Parameters",
+        data: errors.array(),
+      })
+    : next();
+};
+
+module.exports = {
+  loginValidationMiddleware: loginValidationMiddleware,
+  loginValidationErroreHandler: loginValidationErroreHandler,
 };

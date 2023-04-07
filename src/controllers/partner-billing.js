@@ -1,130 +1,82 @@
 const { statusCode } = require("../constants/header-code");
 const { headerMessage } = require("../constants/header-message");
 const partnerBillingServices = require("../services/partner-billing");
-const { restResponse } = require("./base");
+const { restResponse, apiResponse } = require("./base");
 
 module.exports = {
-
-    getBillingInvoices: async (request, response) => {
-        try {
-
-            const resellerId = request.reseller_id;
-
-            partnerBillingServices.getBillingInvoices(resellerId, (data) => {
-                if (data !== undefined && data !== null) {
-                    return restResponse(
-                        response,
-                        statusCode.success,
-                        headerMessage.success,
-                        { data })
-                }
-                else {
-                    return restResponse(
-                        response,
-                        statusCode.notFound,
-                        headerMessage.notFound,
-                        { data })
-                }
-            })
-        } catch (error) {
-            return restResponse(
-                response,
-                statusCode.someThingWentWrong,
-                headerMessage.someThingWentWrong,
-                null
-            )
+  getBillingInvoices: async (request, response) => {
+    try {
+      const resellerId = request.user.reseller_id;
+      partnerBillingServices.getBillingInvoices(
+        resellerId,
+        (data, code, status, message) => {
+          if (data !== undefined && data !== null) {
+            return apiResponse(response, code, status, message, data);
+          } else {
+            return apiResponse(response, code, status, message, []);
+          }
         }
-    },
-
-    getActiveVpnUsers: async (request, response) => {
-        try {
-            const resellerId = request.reseller_id;
-            const queryStrings = request.query;
-
-            partnerBillingServices.getActiveVpnUsers(resellerId, queryStrings, (data) => {
-                if (data !== undefined && data !== null) {
-                    return restResponse(
-                        response,
-                        statusCode.success,
-                        headerMessage.success,
-                        { data })
-                }
-                else {
-                    return restResponse(
-                        response,
-                        statusCode.notFound,
-                        headerMessage.notFound,
-                        { data })
-                }
-            })
-        } catch (error) {
-            return restResponse(
-                response,
-                statusCode.someThingWentWrong,
-                headerMessage.someThingWentWrong,
-                null
-            )
-        }
-    },
-
-    getConnectedVpnUsers: async (request, response) => {
-        try {
-            const resellerId = request.reseller_id;
-            partnerBillingServices.getConnectedVpnUsers(resellerId, (data) => {
-                if (data !== undefined && data !== null) {
-                    return restResponse(
-                        response,
-                        statusCode.success,
-                        headerMessage.success,
-                        { data })
-                }
-                else {
-                    return restResponse(
-                        response,
-                        statusCode.notFound,
-                        headerMessage.notFound,
-                        { data })
-                }
-            })
-        } catch (error) {
-            return restResponse(
-                response,
-                statusCode.someThingWentWrong,
-                headerMessage.someThingWentWrong,
-                null
-            )
-        }
-    },
-
-    getVpnBillingEstimation: async (request, response) => {
-        try {
-            const resellerId = request.reseller_id;
-            const queryStrings = request.query;
-            partnerBillingServices.getVpnBillingEstimation(resellerId, queryStrings, (data) => {
-                if (data !== undefined || data !== null) {
-                    return restResponse(
-                        response,
-                        statusCode.success,
-                        headerMessage.success,
-                        { data })
-                }
-                else {
-                    return restResponse(
-                        response,
-                        statusCode.notFound,
-                        headerMessage.notFound,
-                        { data })
-                }
-            })
-        } catch (error) {
-            return restResponse(
-                response,
-                statusCode.someThingWentWrong,
-                headerMessage.someThingWentWrong,
-                null
-            )
-        }
+      );
+    } catch (error) {
+      return apiResponse(response, 500, "0", "Internal Server Error");
     }
+  },
 
-}
+  getActiveVpnUsers: async (request, response) => {
+    try {
+      const resellerId = request.user.reseller_id;
+      const queryStrings = request.query;
+      partnerBillingServices.getActiveVpnUsers(
+        resellerId,
+        queryStrings,
+        (data, code, status, message) => {
+          if (data !== undefined && data !== null) {
+            return apiResponse(response, code, status, message, data);
+          } else {
+            return apiResponse(response, code, status, message, []);
+          }
+        }
+      );
+    } catch (error) {
+      return apiResponse(response, 500, "0", "Internal Server Error");
+    }
+  },
 
+  getConnectedVpnUsers: async (request, response) => {
+    try {
+      const resellerId = request.user.reseller_id;
+      partnerBillingServices.getConnectedVpnUsers(
+        resellerId,
+        (data, code, status, message) => {
+          if (data !== undefined && data !== null) {
+            return apiResponse(response, code, status, message, data);
+          } else {
+            return apiResponse(response, code, status, message, []);
+          }
+        }
+      );
+    } catch (error) {
+      return apiResponse(response, 500, "0", "Internal Server Error");
+    }
+  },
+
+  getVpnBillingEstimation: async (request, response) => {
+    try {
+      const resellerId = request.user.reseller_id;
+      const queryStrings = request.query;
+      partnerBillingServices.getVpnBillingEstimation(
+        resellerId,
+        queryStrings,
+        (data, code, status, message) => {
+          if (data !== undefined && data !== null) {
+            return apiResponse(response, code, status, message, data);
+          } else {
+            return apiResponse(response, code, status, message, []);
+          }
+        }
+      );
+    } catch (error) {
+      return apiResponse(response, 500, "0", "Internal Server Error");
+    }
+  },
+};
