@@ -15,15 +15,20 @@ const {
 } = require("../helpers/dateFormatter");
 
 module.exports = {
-  getBillingInvoices: async (resellerId, callback) => {
+  invoices: async (resellerId, callback) => {
     try {
       const filteredData = [];
       const invoices = await chargifyInstance.invoices({
         "Content-Type": "application/json",
         Authorization: process.env.CHARGIFY_SECRET_KEY,
       });
-      if (invoices) {
-        invoices.data.invoices.map((invoice) => {
+      if (
+        invoices &&
+        invoices !== undefined &&
+        invoices !== null &&
+        Object.keys(invoices).length !== 0
+      ) {
+        invoices.invoices.forEach((invoice) => {
           filteredData.push({
             invoice_uid: invoice.uid,
             amount: `${getCurrencySymbol(invoice.currency)}${
@@ -36,16 +41,19 @@ module.exports = {
             details: invoice.public_url,
           });
         });
-      }
-      if (filteredData.length > 0) {
         return callback(
           filteredData,
           statusCode.success,
           "1",
-          "Invoices Found Successfully"
+          "VPN invoices found successfully"
         );
       } else {
-        return callback([], statusCode.notFound, "0", "Invoices Not Found");
+        return callback(
+          invoices,
+          statusCode.notFound,
+          "0",
+          "VPN invoices not found"
+        );
       }
     } catch (error) {
       return {
@@ -56,11 +64,11 @@ module.exports = {
     }
   },
 
-  getActiveVpnUsers: async (resellerId, queryStrings, callback) => {
+  getUsersList: async (resellerId, queryStrings, callback) => {
     try {
+      const usernames = [];
       const page = queryStrings.page;
       const limit = queryStrings.limit;
-
       const accessToken = await getAccessToken(resellerId);
       const users = await atomVapInstance.getUsersList(
         `?iResellerId=${resellerId}&iPage=${page || 1}&iLimit=${
@@ -71,20 +79,29 @@ module.exports = {
           "X-AccessToken": accessToken,
         }
       );
-      const body = users.body;
-      if ((body !== null) & (body !== undefined)) {
+      if (
+        users.body &&
+        users.body !== undefined &&
+        users.body !== null &&
+        Object.keys(users.body).length !== 0
+      ) {
+        users.body.data.forEach((user) => {
+          usernames.push({
+            username: user.username,
+          });
+        });
         return callback(
-          body,
+          usernames,
           statusCode.success,
           "1",
-          "Active VPN Users Found Successfully"
+          "VPN active users found successfully"
         );
       } else {
         return callback(
-          [],
+          usernames,
           statusCode.notFound,
           "0",
-          "Active VPN Users Found Successfully"
+          "VPN active users not found"
         );
       }
     } catch (error) {
@@ -96,7 +113,7 @@ module.exports = {
     }
   },
 
-  getConnectedVpnUsers: async (resellerId, callback) => {
+  getResellerConnectedUsersList: async (resellerId, callback) => {
     try {
       const usernames = [];
       const today = new Date();
@@ -111,23 +128,31 @@ module.exports = {
             "Content-Type": "application/json",
           }
         );
-      if ((connectedUsers !== undefined) & (connectedUsers !== null)) {
-        connectedUsers.forEach((user) => {
-          usernames.push({ username: user });
+      if (
+        connectedUsers &&
+        connectedUsers.body !== undefined &&
+        connectedUsers.body !== null &&
+        Object.keys(connectedUsers.body).length !== 0
+      ) {
+        connectedUsers.body.forEach((user) => {
+          usernames.push({
+            username: user,
+          });
         });
         return callback(
           usernames,
           statusCode.success,
           "1",
-          "Connected VPN Users Found Successfully"
+          "VPN connected users found successfully"
+        );
+      } else {
+        return callback(
+          usernames,
+          statusCode.notFound,
+          "0",
+          "VPN connected users not found"
         );
       }
-      return callback(
-        [],
-        statusCode.notFound,
-        "0",
-        "Connected VPN Users Not Found"
-      );
     } catch (error) {
       return {
         code: statusCode.someThingWentWrong,
@@ -137,7 +162,7 @@ module.exports = {
     }
   },
 
-  getVpnBillingEstimation: async (
+  getBillingEstimation: async (
     resellerId,
     queryStrings,
     subscriptionType,
@@ -160,7 +185,7 @@ module.exports = {
       const resellerBilling = await partnerBillingInstance.resellerBilling({
         "Content-Type": "application/json",
       });
-      resellerBilling.forEach((bill) => {
+      resellerBilling.body.forEach((bill) => {
         if (bill.reseller_id === resellerId) {
           if (bill.subscription_slug === subscriptionType) {
             if (bill.component_slug === "paid") {
@@ -200,7 +225,6 @@ module.exports = {
           Object.entries(obj).filter(([_, v]) => v !== undefined)
         )
       );
-
       Promise.all(
         billingAccounts.map(async (account) => {
           // FOR CONNECTED USERS
@@ -230,7 +254,7 @@ module.exports = {
                   });
                 });
               }
-              return;
+
               if (trial !== undefined) {
                 const trialPricePoints = await chargifyInstance.price_points(
                   trial,
@@ -329,35 +353,41 @@ module.exports = {
                 const { startDate, endDate } = months;
 
                 const resellerActiveUsers =
-                  await elasticSearchInstance.getResellerConnectedUsers(
-                    `?IResellerId=${resellerId}&sFromDate=${startDate}&sToDate=${endDate}`,
+                  await atomVapInstance.getActiveUsersList(
+                    `?IResellerId=${resellerId}`,
                     {
                       "Content-Type": "application/json",
                       "X-AccessToken": accessToken,
                     }
                   );
 
-                userAccountTotalCost.push({
-                  month: getMonthYear(startDate, endDate),
-                  total_cost_of_active_accounts:
-                    resellerActiveUsers.connected * activeUserUnitPrice || 0,
+                resellerActiveUsers.body.subscriptions.forEach((user) => {
+                  userAccountTotalCost.push({
+                    month: getMonthYear(startDate, endDate),
+                    total_cost_of_active_accounts:
+                      user.usersCount * activeUserUnitPrice || 0,
+                  });
                 });
               }
             }
-
-            if (userAccountTotalCost.length > 0) {
+            if (
+              userAccountTotalCost &&
+              userAccountTotalCost !== undefined &&
+              userAccountTotalCost !== null &&
+              Object.keys(userAccountTotalCost).length !== 0
+            ) {
               return callback(
                 userAccountTotalCost,
                 statusCode.success,
                 "1",
-                "Billing Estimations Found Successfully"
+                "VPN accounts costs found successfully"
               );
             } else {
               return callback(
-                [],
+                userAccountTotalCost,
                 statusCode.notFound,
-                "0",
-                "Billing Estimations Not Found"
+                "1",
+                "VPN accounts costs not found"
               );
             }
           } catch (error) {

@@ -24,6 +24,8 @@ module.exports = {
           "1",
           "User Successfully Logged In"
         );
+      } else {
+        return callback(user, statusCode.notFound, "0", "Login Error");
       }
     } catch (error) {
       return {

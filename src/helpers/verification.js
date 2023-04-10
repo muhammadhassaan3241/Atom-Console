@@ -1,6 +1,6 @@
 const { statusCode } = require("../constants/header-code");
 const { headerMessage } = require("../constants/header-message");
-const { restResponse } = require("../controllers/base");
+const { restResponse, apiResponse } = require("../controllers/base");
 const jwt = require("jsonwebtoken");
 const { Permission, Role, User } = require("../models/user");
 
@@ -28,18 +28,20 @@ const jwtVerification = async (request, response, next) => {
       request.user = user;
       next();
     } else {
-      return restResponse(
+      return apiResponse(
         response,
         statusCode.forbidden,
+        "0",
         headerMessage.forbidden,
         null
       );
     }
   } catch (error) {
-    return restResponse(
+    return apiResponse(
       response,
-      statusCode.forbidden,
-      headerMessage.forbidden,
+      statusCode.someThingWentWrong,
+      "0",
+      "Access Token Required",
       null
     );
   }

@@ -1,29 +1,43 @@
 const { vpnAccountManagementURL } = require("../constants/constant");
 const {
-  status,
-  create,
-  renew,
-  remove,
-  extendExpiry,
-  updatePreferences,
-  getResellerInventory,
-  enableOrDisable,
-  listUsers,
-  getAllServiceTypes,
-} = require("../services/vpn-account-management");
+  getVpnAccountStatus,
+  createVpnAccount,
+  renewVpnAccount,
+  deleteVpnAccount,
+  updatePreferenceOfVpnAccount,
+  changePasswordOfVpnAccount,
+  extendExpiryOfVpnAccount,
+  getVpnUserInventory,
+  getVpnUsers,
+  enableOrDisableVpnAccount,
+  getServices,
+} = require("../controllers/vpn-account-management");
 
 const router = require("express").Router();
 
 router
-  .post(vpnAccountManagementURL.getVpnAccountStatus, status)
-  .post(vpnAccountManagementURL.createVpnAccount, create)
-  .post(vpnAccountManagementURL.renewVpnAccount, renew)
-  .post(vpnAccountManagementURL.deleteVpnAccount, remove)
-  .post(vpnAccountManagementURL.extendExpiryOfVpnAccount, extendExpiry)
-  .post(vpnAccountManagementURL.updatePreferenceOfVpnAccount, updatePreferences)
-  .post(vpnAccountManagementURL.getUserInventory, getResellerInventory)
-  .get(vpnAccountManagementURL.enable_disableVpnAccount, enableOrDisable)
-  .get(vpnAccountManagementURL.getUsers, listUsers)
-  .get(vpnAccountManagementURL.getServiceTypes, getAllServiceTypes);
+  .post(vpnAccountManagementURL.getVpnAccountStatus, getVpnAccountStatus)
+  .post(vpnAccountManagementURL.createVpnAccount, createVpnAccount)
+  .post(vpnAccountManagementURL.renewVpnAccount, renewVpnAccount)
+  .post(vpnAccountManagementURL.deleteVpnAccount, deleteVpnAccount)
+  .post(
+    vpnAccountManagementURL.extendExpiryOfVpnAccount,
+    extendExpiryOfVpnAccount
+  )
+  .post(
+    vpnAccountManagementURL.changePasswordOfVpnAccount,
+    changePasswordOfVpnAccount
+  )
+  .post(
+    vpnAccountManagementURL.updatePreferenceOfVpnAccount,
+    updatePreferenceOfVpnAccount
+  )
+  .post(
+    vpnAccountManagementURL.enable_disableVpnAccount,
+    enableOrDisableVpnAccount
+  )
+  .get(vpnAccountManagementURL.getUserInventory, getVpnUserInventory)
+  .get(vpnAccountManagementURL.getUsers, getVpnUsers)
+  .get(vpnAccountManagementURL.getServiceTypes, getServices);
 
 module.exports = router;

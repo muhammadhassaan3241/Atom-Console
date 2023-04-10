@@ -6,217 +6,237 @@ const { apiResponse } = require("./base");
 module.exports = {
   getVpnAccountStatus: async (request, response) => {
     try {
-      const resellerId = request.reseller_id;
-      vpnAccountManagementServices.getVpnAccount(resellerId, (data) => {
-        if (data !== undefined || data !== null) {
-          return;
-        } else {
-          return;
+      const resellerId = request.user.reseller_id;
+      const formData = request.body;
+      vpnAccountManagementServices.status(
+        resellerId,
+        formData,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
-      });
+      );
     } catch (error) {
-      return;
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong,
+        undefined
+      );
     }
   },
 
   createVpnAccount: async (request, response) => {
     try {
-      const resellerId = request.reseller_id;
-      vpnAccountManagementServices.createVpnAccount(resellerId, (data) => {
-        if (data !== undefined || data !== null) {
-          return;
-        } else {
-          return;
+      const resellerId = request.user.reseller_id;
+      const formData = request.body;
+      vpnAccountManagementServices.create(
+        resellerId,
+        formData,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
-      });
+      );
     } catch (error) {
-      return;
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        statusCode.someThingWentWrong,
+        data
+      );
     }
   },
 
   deleteVpnAccount: async (request, response) => {
     try {
-      const resellerId = request.reseller_id;
-      vpnAccountManagementServices.deleteVpnAccount(resellerId, (data) => {
-        if (data !== undefined || data !== null) {
-          return;
-        } else {
-          return;
+      const resellerId = request.user.reseller_id;
+      const formData = request.body;
+      vpnAccountManagementServices.remove(
+        resellerId,
+        formData,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
-      });
+      );
     } catch (error) {
-      return;
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong,
+        data
+      );
     }
   },
 
   renewVpnAccount: async (request, response) => {
     try {
-      const resellerId = request.reseller_id;
-      vpnAccountManagementServices.renewVpnAccount(resellerId, (data) => {
-        if (data !== undefined || data !== null) {
-          return;
-        } else {
-          return;
+      const resellerId = request.user.reseller_id;
+      const formData = request.body;
+      vpnAccountManagementServices.renew(
+        resellerId,
+        formData,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
-      });
+      );
     } catch (error) {
-      return;
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong,
+        undefined
+      );
     }
   },
 
   extendExpiryOfVpnAccount: async (request, response) => {
     try {
-      const resellerId = request.reseller_id;
-      vpnAccountManagementServices.extendExpiryOfVpnAccount(
+      const resellerId = request.user.reseller_id;
+      const formData = request.body;
+      vpnAccountManagementServices.extendExpiry(
         resellerId,
-        (data) => {
-          if (data !== undefined || data !== null) {
-            return response.status(statusCode.success).json({
-              status: "1",
-              message: headerMessage.success,
-            });
-          } else {
-            return response.status(statusCode.notFound).json({
-              status: "0",
-              message: headerMessage.notFound,
-            });
-          }
+        formData,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
       );
     } catch (error) {
-      return;
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong,
+        undefined
+      );
     }
   },
 
   updatePreferenceOfVpnAccount: async (request, response) => {
     try {
-      const resellerId = request.reseller_id;
-      vpnAccountManagementServices.updatePreferenceOfVpnAccount(
+      const resellerId = request.user.reseller_id;
+      const formData = request.body;
+      vpnAccountManagementServices.updatePreferences(
         resellerId,
-        (data) => {
-          if (data !== undefined || data !== null) {
-            return response.status(statusCode.success).json({
-              status: "1",
-              message: headerMessage.success,
-            });
-          } else {
-            return response.status(statusCode.notFound).json({
-              status: "0",
-              message: headerMessage.notFound,
-            });
-          }
+        formData,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
       );
     } catch (error) {
-      return;
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong,
+        undefined
+      );
     }
   },
 
   changePasswordOfVpnAccount: async (request, response) => {
     try {
-      const resellerId = request.reseller_id;
-      vpnAccountManagementServices.changePasswordOfVpnAccount(
+      const resellerId = request.user.reseller_id;
+      const formData = request.body;
+      vpnAccountManagementServices.changePassword(
         resellerId,
-        (data) => {
-          if (data !== undefined || data !== null) {
-            return response.status(statusCode.success).json({
-              status: "1",
-              message: headerMessage.success,
-            });
-          } else {
-            return response.status(statusCode.notFound).json({
-              status: "0",
-              message: headerMessage.notFound,
-            });
-          }
+        formData,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
       );
     } catch (error) {
-      return;
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong,
+        undefined
+      );
     }
   },
 
   enableOrDisableVpnAccount: async (request, response) => {
     try {
-      const resellerId = request.reseller_id;
-      vpnAccountManagementServices.enableOrDisableVpnAccount(
+      const resellerId = request.user.reseller_id;
+      const formData = request.body;
+      vpnAccountManagementServices.enableOrDisable(
         resellerId,
-        (data) => {
-          if (data !== undefined || data !== null) {
-            return response.status(statusCode.success).json({
-              status: "1",
-              message: headerMessage.success,
-            });
-          } else {
-            return response.status(statusCode.notFound).json({
-              status: "0",
-              message: headerMessage.notFound,
-            });
-          }
+        formData,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
       );
     } catch (error) {
-      return;
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong,
+        undefined
+      );
     }
   },
 
   getVpnUserInventory: async (request, response) => {
     try {
-      const resellerId = request.reseller_id;
-      vpnAccountManagementServices.getVpnUserInventory(resellerId, (data) => {
-        if (data !== undefined || data !== null) {
-          return;
-        } else {
-          return;
+      const resellerId = request.user.reseller_id;
+      vpnAccountManagementServices.getResellerInventory(
+        resellerId,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
-      });
+      );
     } catch (error) {
-      return;
-    }
-  },
-
-  getVpnUsers: async (request, response) => {
-    try {
-      const resellerId = request.reseller_id;
-      vpnAccountManagementServices.getVpnUsers(resellerId, (data) => {
-        if (data !== undefined || data !== null) {
-          return;
-        } else {
-          return;
-        }
-      });
-    } catch (error) {
-      return;
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong,
+        undefined
+      );
     }
   },
 
   getVpnUsers: async (request, response) => {
     try {
       const resellerId = request.user.reseller_id;
-      await vpnAccountManagementServices.getAllServiceTypes(
+      vpnAccountManagementServices.listUsers(
         resellerId,
-        (data) => {
-          if (data !== undefined || data !== null) {
-            return apiResponse(
-              response,
-              200,
-              "1",
-              "Service Type Found Successfully",
-              data
-            );
-          } else {
-            return apiResponse(
-              response,
-              404,
-              "1",
-              "Service Type Not Found",
-              []
-            );
-          }
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
       );
     } catch (error) {
-      return apiResponse(response, 500, "0", "Internal Server Error", null);
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong,
+        undefined
+      );
+    }
+  },
+
+  getServices: async (request, response) => {
+    try {
+      const resellerId = request.user.reseller_id;
+      await vpnAccountManagementServices.getAllServiceTypes(
+        resellerId,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
+        }
+      );
+    } catch (error) {
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong,
+        undefined
+      );
     }
   },
 };

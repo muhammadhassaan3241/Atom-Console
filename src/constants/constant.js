@@ -51,10 +51,9 @@ module.exports = {
     extendExpiryOfVpnAccount: "/extend-expiry",
     changePasswordOfVpnAccount: "/change-password",
     enable_disableVpnAccount: "/enable-disable",
-    updatePreferenceOfVpnAccount: "/update-preference",
-    updatePreferenceOfVpnAccount: "/update-preference",
+    updatePreferenceOfVpnAccount: "/update-preferences",
     getUserInventory: "/inventory",
     getUsers: "/users",
-    getServiceTypes: "/getServiceTypes",
+    getServiceTypes: "/getServices",
   },
 };

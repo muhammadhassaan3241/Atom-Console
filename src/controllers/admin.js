@@ -9,14 +9,15 @@ module.exports = {
     try {
       const formData = request.body;
       await loginService.loginAdmin(formData, (data, code, status, message) => {
-        if (data !== undefined && data !== null) {
-          return apiResponse(response, code, status, message, data);
-        } else {
-          return apiResponse(response, code, status, message, data);
-        }
+        return apiResponse(response, code, status, message, data);
       });
     } catch (error) {
-      return apiResponse(response, 500, "0", "Internal Server Error");
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong
+      );
     }
   },
 };

@@ -1,24 +1,25 @@
 const { statusCode } = require("../constants/header-code");
 const { headerMessage } = require("../constants/header-message");
 const partnerBillingServices = require("../services/partner-billing");
-const { restResponse, apiResponse } = require("./base");
+const { apiResponse } = require("./base");
 
 module.exports = {
   getBillingInvoices: async (request, response) => {
     try {
       const resellerId = request.user.reseller_id;
-      partnerBillingServices.getBillingInvoices(
+      partnerBillingServices.invoices(
         resellerId,
         (data, code, status, message) => {
-          if (data !== undefined && data !== null) {
-            return apiResponse(response, code, status, message, data);
-          } else {
-            return apiResponse(response, code, status, message, []);
-          }
+          return apiResponse(response, code, status, message, data);
         }
       );
     } catch (error) {
-      return apiResponse(response, 500, "0", "Internal Server Error");
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong
+      );
     }
   },
 
@@ -26,37 +27,39 @@ module.exports = {
     try {
       const resellerId = request.user.reseller_id;
       const queryStrings = request.query;
-      partnerBillingServices.getActiveVpnUsers(
+      partnerBillingServices.getUsersList(
         resellerId,
         queryStrings,
         (data, code, status, message) => {
-          if (data !== undefined && data !== null) {
-            return apiResponse(response, code, status, message, data);
-          } else {
-            return apiResponse(response, code, status, message, []);
-          }
+          return apiResponse(response, code, status, message, data);
         }
       );
     } catch (error) {
-      return apiResponse(response, 500, "0", "Internal Server Error");
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong
+      );
     }
   },
 
   getConnectedVpnUsers: async (request, response) => {
     try {
       const resellerId = request.user.reseller_id;
-      partnerBillingServices.getConnectedVpnUsers(
+      partnerBillingServices.getResellerConnectedUsersList(
         resellerId,
         (data, code, status, message) => {
-          if (data !== undefined && data !== null) {
-            return apiResponse(response, code, status, message, data);
-          } else {
-            return apiResponse(response, code, status, message, []);
-          }
+          return apiResponse(response, code, status, message, data);
         }
       );
     } catch (error) {
-      return apiResponse(response, 500, "0", "Internal Server Error");
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong
+      );
     }
   },
 
@@ -64,19 +67,22 @@ module.exports = {
     try {
       const resellerId = request.user.reseller_id;
       const queryStrings = request.query;
-      partnerBillingServices.getVpnBillingEstimation(
+      const subscription = request.user.subscription;
+      partnerBillingServices.getBillingEstimation(
         resellerId,
         queryStrings,
+        subscription,
         (data, code, status, message) => {
-          if (data !== undefined && data !== null) {
-            return apiResponse(response, code, status, message, data);
-          } else {
-            return apiResponse(response, code, status, message, []);
-          }
+          return apiResponse(response, code, status, message, data);
         }
       );
     } catch (error) {
-      return apiResponse(response, 500, "0", "Internal Server Error");
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong
+      );
     }
   },
 };

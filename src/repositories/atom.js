@@ -19,6 +19,14 @@ class AtomVapRepository {
     );
     return data;
   }
+
+  async getActiveUsersList(queryString, headers) {
+    const { data } = await axios.get(
+      `${process.env.ATOM_BASE_URL}/vap/v1/reseller/active/users${queryString}`,
+      { headers }
+    );
+    return data;
+  }
 }
 
 class AtomVamRepository {
@@ -46,6 +54,7 @@ class AtomVamRepository {
       formData,
       { headers }
     );
+    console.log(data);
     return data;
   }
 
@@ -59,11 +68,13 @@ class AtomVamRepository {
   }
 
   async extendExpiry(formData, headers) {
-    const { data } = await axios.post(
-      `${process.env.ATOM_BASE_URL}/vam/v1/extendExpiry`,
-      formData,
-      { headers }
-    );
+    const { data } = await axios
+      .post(`${process.env.ATOM_BASE_URL}/vam/v1/extendExpiry`, formData, {
+        headers,
+      })
+      .catch(() => {
+        return data.header;
+      });
     return data;
   }
 
@@ -103,17 +114,17 @@ class AtomVamRepository {
     return data;
   }
 
-  async getResellerInventory(headers) {
+  async getResellerInventory(queryStrings, headers) {
     const { data } = await axios.get(
-      `${process.env.ATOM_BASE_URL}/vam/v1/getResellerInventory`,
+      `${process.env.ATOM_BASE_URL}/inventory/v1/getResellerInventory${queryStrings}`,
       { headers }
     );
     return data;
   }
 
-  async listUsers(headers) {
+  async listUsers(queryStrings, headers) {
     const { data } = await axios.get(
-      `${process.env.ATOM_BASE_URL}/vam/v1/listUsers`,
+      `${process.env.ATOM_BASE_URL}/vap/v1/listUsers${queryStrings}`,
       { headers }
     );
     return data;

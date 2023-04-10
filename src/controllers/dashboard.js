@@ -1,69 +1,24 @@
 const { statusCode } = require("../constants/header-code");
 const { headerMessage } = require("../constants/header-message");
 const dashboardServices = require("../services/dashboard");
-const { restResponse } = require("./base");
+const { restResponse, apiResponse } = require("./base");
 
 module.exports = {
-  getMonthlyVpnConnectedUsers: async (request, response) => {
-    try {
-      const resellerId = request.user.reseller_id;
-      dashboardServices.getMonthlyVpnConnectedUsers(
-        resellerId,
-        (data, customStatus, message) => {
-          if ((data !== undefined) & (data !== null)) {
-            return restResponse(
-              response,
-              statusCode.success,
-              headerMessage.success,
-              customStatus,
-              message,
-              data
-            );
-          } else {
-            restResponse(
-              response,
-              statusCode.notFound,
-              headerMessage.notFound,
-              customStatus,
-              message,
-              data
-            );
-          }
-        }
-      );
-    } catch (error) {
-      return restResponse(
-        response,
-        statusCode.someThingWentWrong,
-        headerMessage.someThingWentWrong,
-        null
-      );
-    }
-  },
-
   getProtocolList: async (request, response) => {
     try {
       const resellerId = request.user.reseller_id;
-      dashboardServices.getProtocolList(resellerId, (data) => {
-        if ((data !== undefined) & (data !== null)) {
-          return restResponse(
-            response,
-            statusCode.success,
-            headerMessage.success,
-            data
-          );
-        } else {
-          restResponse(response, statusCode.notFound, headerMessage.notFound, {
-            data,
-          });
+      dashboardServices.protocolList(
+        resellerId,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
-      });
+      );
     } catch (error) {
-      return restResponse(
+      return apiResponse(
         response,
         statusCode.someThingWentWrong,
-        headerMessage.someThingWentWrong,
-        null
+        "0",
+        headerMessage.someThingWentWrong
       );
     }
   },
@@ -71,26 +26,18 @@ module.exports = {
   getSourceCountry: async (request, response) => {
     try {
       const resellerId = request.user.reseller_id;
-      dashboardServices.getSourceContry(resellerId, (data) => {
-        if ((data !== undefined) & (data !== null)) {
-          return restResponse(
-            response,
-            statusCode.success,
-            headerMessage.success,
-            data
-          );
-        } else {
-          restResponse(response, statusCode.notFound, headerMessage.notFound, {
-            data,
-          });
+      dashboardServices.sourceContry(
+        resellerId,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
-      });
+      );
     } catch (error) {
-      return restResponse(
+      return apiResponse(
         response,
         statusCode.someThingWentWrong,
-        headerMessage.someThingWentWrong,
-        null
+        "0",
+        headerMessage.someThingWentWrong
       );
     }
   },
@@ -98,26 +45,18 @@ module.exports = {
   getDestinationCountry: async (request, response) => {
     try {
       const resellerId = request.user.reseller_id;
-      dashboardServices.getDestinationCountry(resellerId, (data) => {
-        if ((data !== undefined) & (data !== null)) {
-          return restResponse(
-            response,
-            statusCode.success,
-            headerMessage.success,
-            data
-          );
-        } else {
-          restResponse(response, statusCode.notFound, headerMessage.notFound, {
-            data,
-          });
+      dashboardServices.destinationCountry(
+        resellerId,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
         }
-      });
+      );
     } catch (error) {
-      return restResponse(
+      return apiResponse(
         response,
         statusCode.someThingWentWrong,
-        headerMessage.someThingWentWrong,
-        null
+        "0",
+        headerMessage.someThingWentWrong
       );
     }
   },

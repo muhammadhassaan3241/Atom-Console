@@ -1,37 +1,9 @@
-const elasticSearchInstance = require("../repositories/elastic-search");
 const fileManagerInstance = require("../repositories/file");
-const { dateFormatter } = require("../helpers/dateFormatter");
 const { statusCode } = require("../constants/header-code");
 const { headerMessage } = require("../constants/header-message");
 
 module.exports = {
-  getMonthlyVpnConnectedUsers: async (resellerId, callback) => {
-    try {
-      const today = new Date();
-      const firstAndCurrentDayOfCurrentMonth = dateFormatter(today);
-      const firstDay = firstAndCurrentDayOfCurrentMonth.formattedFirstDay;
-      const currentDay = firstAndCurrentDayOfCurrentMonth.formattedCurrentDay;
-      const resellerConnectedUsersList =
-        await elasticSearchInstance.getResellerConnectedUsersList(
-          `?IResellerId=${resellerId}&sFromDate=${firstDay}&sToDate=${currentDay}`,
-          { "Content-Type": "application/json" }
-        );
-      if (!resellerConnectedUsersList) {
-        return callback([], "1", "Monthly VPN Connected Not Found");
-      }
-      return callback(
-        resellerConnectedUsersList,
-        "1",
-        "Monthly VPN Connected User Found Successfully"
-      );
-    } catch (error) {
-      let code = statusCode.someThingWentWrong;
-      let message = headerMessage.someThingWentWrong;
-      return { code, message };
-    }
-  },
-
-  getProtocolList: async (resellerId, callback) => {
+  protocolList: async (resellerId, callback) => {
     try {
       const protocolsArray = [];
       const protocols = await fileManagerInstance.readFile(
@@ -46,9 +18,19 @@ module.exports = {
             total_users: list.TotalUsers,
           });
         });
-        return callback(protocolsArray);
+        return callback(
+          protocolsArray,
+          statusCode.success,
+          "1",
+          "VPN protocol list found successfully"
+        );
       }
-      return callback(protocolsArray);
+      return callback(
+        protocolsArray,
+        statusCode.notFound,
+        "0",
+        "VPN protocol list not found"
+      );
     } catch (error) {
       let code = statusCode.notFound;
       let message = headerMessage.notFound;
@@ -56,16 +38,26 @@ module.exports = {
     }
   },
 
-  getSourceContry: async (resellerId, callback) => {
+  sourceContry: async (resellerId, callback) => {
     try {
       const sourceCountries = await fileManagerInstance.readFile(
         "getCurrentLoadwrtSources.json"
       );
       const jsonData = JSON.parse(sourceCountries);
       if ((jsonData !== null) & (jsonData !== undefined)) {
-        return callback(jsonData.body.slice(0, 12));
+        return callback(
+          jsonData.body.slice(0, 12),
+          statusCode.success,
+          "1",
+          "VPN source country found list successfully"
+        );
       }
-      return callback(jsonData);
+      return callback(
+        jsonData,
+        statusCode.notFound,
+        "0",
+        "VPN source country list not found"
+      );
     } catch (error) {
       let code = statusCode.notFound;
       let message = headerMessage.notFound;
@@ -73,16 +65,26 @@ module.exports = {
     }
   },
 
-  getDestinationCountry: async (resellerId, callback) => {
+  destinationCountry: async (resellerId, callback) => {
     try {
       const destinationCountries = await fileManagerInstance.readFile(
         "getCurrentLoadwrtDestination.json"
       );
       const jsonData = JSON.parse(destinationCountries);
       if ((jsonData !== null) & (jsonData !== undefined)) {
-        return callback(jsonData.body.slice(0, 12));
+        return callback(
+          jsonData.body.slice(0, 12),
+          statusCode.success,
+          "1",
+          "VPN destination country list found successfully"
+        );
       }
-      return callback(jsonData);
+      return callback(
+        jsonData,
+        statusCode.notFound,
+        "0",
+        "VPN destination country list not found"
+      );
     } catch (error) {
       let code = statusCode.notFound;
       let message = headerMessage.notFound;

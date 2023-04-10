@@ -14,7 +14,6 @@ class ChargifyRepository {
       `${process.env.CHARGIFY_BASE_URL}/components/${componentId}/price_points.json`,
       { headers }
     );
-    console.log(data);
     return data;
   }
 }

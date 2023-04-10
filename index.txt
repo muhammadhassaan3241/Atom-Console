@@ -1,0 +1,47 @@
+---------------------------------------------------------------------
+USER URL CHANGED
+
+getUsers ===>>> "/users"
+getUserByResellerId ===>>> "/user/:parentId"
+updateUser ===>>> "/update/:id"
+deleteUser ===>>> "/delete/:id"
+
+----------------------------------------------------------------------
+ROLE URL CHANGED
+
+getRoles ===>>> "/roles"
+getRoleByRoleId ===>>> "/roles/:id"
+
+----------------------------------------------------------------------
+PERMISSION URL CHANGED
+
+getPermissions ===>>> "/permissions"
+getPermissionByPermissionId ===>>> "/permissions/:id"
+
+----------------------------------------------------------------------
+PATRNER BILLING URL CHANGED
+
+getVpnBillingEstimation ===>>> "/get-billing-estimation"
+getVpnActiveUsers ===>>> "/active-users"
+getConnectedUsers ===>>> "/connected-users"
+
+-----------------------------------------------------------------------
+DASHBOARD URL CHANGED
+
+getVpnMonthlyUsers ===>>> "/monthly-users"
+getVpnProtocolList ===>>> "/protocol-list"
+getVpnUserSourceCountry ===>>> "/source-country"
+getVpnUsersDestinationCountry ===>>> "/destination-country"
+
+------------------------------------------------------------------------
+FOR VPN ACCOUNT MANAGEMENT CHANGED
+
+extendExpiryOfVpnAccount ===>>> "/extend-expiry"
+changePasswordOfVpnAccount ===>>> "/change-password"
+enable_disableVpnAccount ===>>> "/enable-disable"
+updatePreferenceOfVpnAccount ===>>> "/update-preferences"
+getUserInventory ===>>> "/inventory"
+getUsers ===>>> "/users"
+getServiceTypes ===>>> "/getServices"
+
+------------------------------------------------------------------------

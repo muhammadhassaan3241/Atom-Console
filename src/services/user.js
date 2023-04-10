@@ -10,7 +10,21 @@ module.exports = {
     try {
       const filteredQuery = {};
       const users = await userInstance.findAll(User, filteredQuery);
-      return callback(users);
+      if (
+        users &&
+        users !== null &&
+        users !== undefined &&
+        Object.keys(users).length !== 0
+      ) {
+        return callback(
+          users,
+          statusCode.success,
+          "1",
+          "Users Found Successfully"
+        );
+      } else {
+        return callback(users, statusCode.notFound, "0", "Users Not Found");
+      }
     } catch (error) {
       let code = statusCode.notFound;
       let message = headerMessage.notFound;
@@ -22,7 +36,21 @@ module.exports = {
     try {
       const filteredQuery = { where: { parentkey: parentkey } };
       const user = await userInstance.findOne(User, filteredQuery);
-      return callback(user);
+      if (
+        user &&
+        user !== null &&
+        user !== undefined &&
+        Object.keys(user).length !== 0
+      ) {
+        return callback(
+          user,
+          statusCode.success,
+          "1",
+          "User Found Successfully"
+        );
+      } else {
+        return callback(user, statusCode.notFound, "0", "User Not Found");
+      }
     } catch (error) {
       let code = statusCode.notFound;
       let message = headerMessage.notFound;
@@ -37,13 +65,29 @@ module.exports = {
       const roleFilteredQuery = { where: roleName };
       const userFilteredQuery = { where: userEmail };
       const user = await userInstance.findOne(User, userFilteredQuery);
-      if (user === null || user === undefined) {
+      if (
+        user &&
+        user !== null &&
+        user !== undefined &&
+        Object.keys(user).length !== 0
+      ) {
         const newUser = await userInstance.create(User, formData);
         const role = await userInstance.findOne(Role, roleFilteredQuery);
         await userInstance.setRole(newUser, role);
-        return callback(newUser);
+        return callback(
+          newUser,
+          statusCode.success,
+          "1",
+          "User Created Successfully"
+        );
+      } else {
+        return callback(
+          user,
+          statusCode.badRequest,
+          "0",
+          "User Already Exists"
+        );
       }
-      return callback(user);
     } catch (error) {
       let code = statusCode.someThingWentWrong;
       let message = headerMessage.someThingWentWrong;
@@ -56,24 +100,43 @@ module.exports = {
       const userFilteredQuery = { where: { id: userId } };
       const roleFilteredQuery = { where: { name: formData.role } };
 
-      if (formData.role !== null && formData.role !== undefined) {
+      if (
+        formData.role &&
+        formData.role !== null &&
+        formData.role !== undefined
+      ) {
         const user = await userInstance.findOne(User, userFilteredQuery);
         if ((user !== null) & (user !== undefined)) {
           const role = await userInstance.findOne(Role, roleFilteredQuery);
           await userInstance.setRole(user, role);
           await userInstance.update(user, formData);
-          return callback(user);
+          return callback(
+            user,
+            statusCode.success,
+            "1",
+            "User Updated Successfully"
+          );
         } else {
-          return callback(user);
+          return callback(user, statusCode.notFound, "0", "Invalid User Id");
         }
       }
 
       const user = await userInstance.findOne(User, userFilteredQuery);
-      if (user !== null && user !== undefined) {
+      if (
+        user &&
+        user !== null &&
+        user !== undefined &&
+        Object.keys(user).length !== 0
+      ) {
         await userInstance.update(user, formData);
-        return callback(user);
+        return callback(
+          user,
+          statusCode.success,
+          "1",
+          "User Updated Successfully"
+        );
       } else {
-        return callback(user);
+        return callback(user, statusCode.notFound, "0", "Invalid User Id");
       }
     } catch (error) {
       let code = statusCode.notFound;
@@ -86,7 +149,22 @@ module.exports = {
     try {
       const filteredQuery = { where: { id: userId } };
       const user = await userInstance.destroy(User, filteredQuery);
-      return callback(user);
+      if (
+        user &&
+        user !== null &&
+        user !== undefined &&
+        Object.keys(user).length !== 0
+      ) {
+        await userInstance.update(user, formData);
+        return callback(
+          user,
+          statusCode.success,
+          "1",
+          "User Deleted Successfully"
+        );
+      } else {
+        return callback(user, statusCode.notFound, "0", "Invalid User Id");
+      }
     } catch (error) {
       let code = statusCode.notFound;
       let message = headerMessage.notFound;
