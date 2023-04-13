@@ -179,7 +179,7 @@ module.exports = {
         activeUserUnitPrice;
       let userAccountTotalCost = [];
 
-      let startDate = queryStrings.form_date;
+      let startDate = queryStrings.from_date;
       let endDate = queryStrings.to_date;
 
       const resellerBilling = await partnerBillingInstance.resellerBilling({
@@ -228,7 +228,6 @@ module.exports = {
       Promise.all(
         billingAccounts.map(async (account) => {
           // FOR CONNECTED USERS
-
           try {
             if (
               account.subscriptionType === "connection-based" ||
@@ -237,7 +236,6 @@ module.exports = {
               const paid = account.paidUserComponentId;
               const trial = account.trialUserComponentId;
               const connected = account.connectedUserComponentId;
-
               if (paid !== undefined) {
                 const paidPricePoints = await chargifyInstance.price_points(
                   paid,
@@ -246,7 +244,6 @@ module.exports = {
                     Authorization: process.env.CHARGIFY_SECRET_KEY,
                   }
                 );
-
                 paidPricePoints.price_points.forEach((price) => {
                   const prices = price.prices;
                   prices.forEach((price) => {
@@ -254,7 +251,6 @@ module.exports = {
                   });
                 });
               }
-
               if (trial !== undefined) {
                 const trialPricePoints = await chargifyInstance.price_points(
                   trial,
@@ -282,11 +278,13 @@ module.exports = {
 
                 connectedPricePoints.price_points.forEach((price) => {
                   const prices = price.prices;
+                  console.log({ prices });
                   prices.forEach((price) => {
                     connectedUserUnitPrice = price.unit_price;
                   });
                 });
               }
+
               const getMonthStartAndEndDates = getMonthStartEndDates(
                 startDate.replace(/-0(\d)/, "-$1"),
                 endDate.replace(/-0(\d)/, "-$1")
@@ -296,7 +294,6 @@ module.exports = {
 
               for (const months of getMonthStartAndEndDates) {
                 const { startDate, endDate } = months;
-
                 const resellerConnectedUsers =
                   await elasticSearchInstance.getResellerConnectedUsers(
                     `?IResellerId=${resellerId}&sFromDate=${startDate}&sToDate=${endDate}`,
@@ -305,18 +302,17 @@ module.exports = {
                       "X-AccessToken": accessToken,
                     }
                   );
-
                 userAccountTotalCost.push({
                   name: "Paid",
                   month: getMonthYear(startDate, endDate),
                   total_cost_of_paid_accounts:
-                    resellerConnectedUsers.paid * paidUserUnitPrice || 0,
+                    resellerConnectedUsers.body.paid * paidUserUnitPrice || 0,
                 });
                 userAccountTotalCost.push({
                   label: "Trial",
                   month: getMonthYear(startDate, endDate),
                   total_cost_of_trial_accounts:
-                    resellerConnectedUsers.trial * trialUserUnitPrice || 0,
+                    resellerConnectedUsers.body.trial * trialUserUnitPrice || 0,
                 });
               }
             }

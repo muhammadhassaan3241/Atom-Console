@@ -48,6 +48,7 @@ module.exports = {
         "Content-Type": "application/json",
         "X-AccessToken": accessToken,
       });
+
       if (
         remove.body &&
         remove.body !== undefined &&
@@ -111,13 +112,21 @@ module.exports = {
 
   create: async (resellerId, body, callback) => {
     try {
-      let concurrentUser, sessionLimit, countries, cities, protocols;
+      let concurrentUser,
+        multiLogin,
+        sessionLimit,
+        countries,
+        cities,
+        protocols;
       const accessToken = await getAccessToken(resellerId);
       const serviceTypes = await atomInventoryInstance.getAllServiceTypes({
         "Content-Type": "application/json",
         "X-AccessToken": accessToken,
       });
       serviceTypes.body.map((service) => {
+        if (service.serviceKey === "multi_login") {
+          multiLogin = service.serviceId;
+        }
         if (service.serviceKey === "session_limit") {
           sessionLimit = service.serviceId;
         }
@@ -136,23 +145,28 @@ module.exports = {
       });
 
       const preference = {
+        [multiLogin]: body.multi_login,
         [sessionLimit]: body.session_limit,
-        [concurrentUser]: body.concurrent_user,
         [countries]: body.countries,
         [cities]: body.cities,
         [protocols]: body.protocols,
       };
+
+      const preferences = JSON.stringify(preference);
 
       const formData = {
         vpnUsername: body.vpnUsername,
         vpnPassword: body.vpnPassword,
         packageType: body.packageType,
         period: body.period,
+        accountType: body.accountType,
+        isDedicated: body.isDedicated,
+        dedicatedCountry: body.dedicatedCountry,
         uuid: body.uuid,
-        preference,
+        preferences,
       };
-
       const newUser = await atomVamInstance.create(formData, {
+        "Content-Type": "application/json",
         "X-AccessToken": accessToken,
       });
       if (
@@ -251,15 +265,23 @@ module.exports = {
     }
   },
 
-  updatePreferences: async (resellerId, formData, callback) => {
+  updatePreferences: async (resellerId, body, callback) => {
     try {
-      let concurrentUser, sessionLimit, countries, cities, protocols;
+      let concurrentUser,
+        multiLogin,
+        sessionLimit,
+        countries,
+        cities,
+        protocols;
       const accessToken = await getAccessToken(resellerId);
       const serviceTypes = await atomInventoryInstance.getAllServiceTypes({
         "Content-Type": "application/json",
         "X-AccessToken": accessToken,
       });
       serviceTypes.body.map((service) => {
+        if (service.serviceKey === "multi_login") {
+          multiLogin = service.serviceId;
+        }
         if (service.serviceKey === "session_limit") {
           sessionLimit = service.serviceId;
         }
@@ -278,15 +300,23 @@ module.exports = {
       });
 
       const preference = {
-        [sessionLimit]: formData.session_limit,
-        [concurrentUser]: formData.concurrent_user,
-        [countries]: formData.countries,
-        [cities]: formData.cities,
-        [protocols]: formData.protocols,
+        [multiLogin]: body.multi_login,
+        [sessionLimit]: body.session_limit,
+        [concurrentUser]: body.concurrent_user,
+        [countries]: body.countries,
+        [cities]: body.cities,
+        [protocols]: body.protocols,
       };
 
+      const preferences = JSON.stringify(preference);
+
+      const formData = {
+        vpnUsername: body.vpnUsername,
+        userEmail: body.userEmail,
+        preferences,
+      };
       const updatePreferences = await atomVamInstance.updatePreferences(
-        { preference: preference },
+        formData,
         {
           "Content-Type": "application/json",
           "X-AccessToken": accessToken,
