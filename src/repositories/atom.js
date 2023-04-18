@@ -1,4 +1,4 @@
-const { default: axios } = require("axios");
+const { default: axios } = require('axios');
 
 class AtomInventoryRepository {
   async getAllServiceTypes(headers) {
@@ -23,6 +23,14 @@ class AtomVapRepository {
   async getActiveUsersList(queryString, headers) {
     const { data } = await axios.get(
       `${process.env.ATOM_BASE_URL}/vap/v1/reseller/active/users${queryString}`,
+      { headers }
+    );
+    return data;
+  }
+
+  async getUser(queryString, headers) {
+    const { data } = await axios.get(
+      `${process.env.ATOM_BASE_URL}/vap/v1/getUser${queryString}`,
       { headers }
     );
     return data;

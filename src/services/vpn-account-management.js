@@ -1,18 +1,19 @@
-const { statusCode } = require("../constants/header-code");
-const { headerMessage } = require("../constants/header-message");
-const { getAccessToken } = require("../constants/redis");
+const { statusCode } = require('../constants/header-code');
+const { headerMessage } = require('../constants/header-message');
+const { getAccessToken } = require('../constants/redis');
 const {
   atomInventoryInstance,
   atomVamInstance,
-} = require("../repositories/atom");
+  atomVapInstance,
+} = require('../repositories/atom');
 
 module.exports = {
   status: async (resellerId, formData, callback) => {
     try {
       const accessToken = await getAccessToken(resellerId);
       const status = await atomVamInstance.status(formData, {
-        "Content-Type": "application/json",
-        "X-AccessToken": accessToken,
+        'Content-Type': 'application/json',
+        'X-AccessToken': accessToken,
       });
       if (
         status.body &&
@@ -23,14 +24,14 @@ module.exports = {
         return callback(
           status.body,
           statusCode.success,
-          "1",
+          '1',
           status.header.message
         );
       } else {
         return callback(
           status.body,
           statusCode.notFound,
-          "0",
+          '0',
           status.header.message
         );
       }
@@ -45,8 +46,8 @@ module.exports = {
     try {
       const accessToken = await getAccessToken(resellerId);
       const remove = await atomVamInstance.delete(formData, {
-        "Content-Type": "application/json",
-        "X-AccessToken": accessToken,
+        'Content-Type': 'application/json',
+        'X-AccessToken': accessToken,
       });
 
       if (
@@ -58,14 +59,14 @@ module.exports = {
         return callback(
           remove.body,
           statusCode.success,
-          "1",
+          '1',
           remove.header.message
         );
       } else {
         return callback(
           remove.body,
           statusCode.notFound,
-          "0",
+          '0',
           remove.header.message
         );
       }
@@ -76,12 +77,57 @@ module.exports = {
     }
   },
 
-  renew: async (resellerId, formData, callback) => {
+  renew: async (resellerId, body, callback) => {
     try {
+      let multiLogin, sessionLimit, countries, cities, protocols;
       const accessToken = await getAccessToken(resellerId);
+      const serviceTypes = await atomInventoryInstance.getAllServiceTypes({
+        'Content-Type': 'application/json',
+        'X-AccessToken': accessToken,
+      });
+      serviceTypes.body.map((service) => {
+        if (service.serviceKey === 'multi_login') {
+          multiLogin = service.serviceId;
+        }
+        if (service.serviceKey === 'session_limit') {
+          sessionLimit = service.serviceId;
+        }
+        if (service.serviceKey === 'concurrent_users') {
+          concurrentUser = service.serviceId;
+        }
+        if (service.serviceKey === 'protocol') {
+          protocols = service.serviceId;
+        }
+        if (service.serviceKey === 'country') {
+          countries = service.serviceId;
+        }
+        if (service.serviceKey === 'city') {
+          cities = service.serviceId;
+        }
+      });
+
+      const preference = {
+        [multiLogin]: body.multi_login,
+        [sessionLimit]: body.session_limit,
+        [countries]: body.countries,
+        [cities]: body.cities,
+        [protocols]: body.protocols,
+      };
+
+      const preferences = JSON.stringify(preference);
+
+      const formData = {
+        vpnUsername: body.vpnUsername,
+        packageType: body.packageType,
+        period: body.period,
+        account_type: body.accountType,
+        isDedicated: body.isDedicated,
+        dedicatedCountry: body.dedicatedCountry,
+        preferences,
+      };
       const renew = await atomVamInstance.renew(formData, {
-        "Content-Type": "application/json",
-        "X-AccessToken": accessToken,
+        'Content-Type': 'application/json',
+        'X-AccessToken': accessToken,
       });
       if (
         renew.body &&
@@ -92,14 +138,14 @@ module.exports = {
         return callback(
           renew.body,
           statusCode.success,
-          "1",
+          '1',
           renew.header.message
         );
       } else {
         return callback(
           renew.body,
           statusCode.notFound,
-          "0",
+          '0',
           renew.header.message
         );
       }
@@ -112,34 +158,29 @@ module.exports = {
 
   create: async (resellerId, body, callback) => {
     try {
-      let concurrentUser,
-        multiLogin,
-        sessionLimit,
-        countries,
-        cities,
-        protocols;
+      let multiLogin, sessionLimit, countries, cities, protocols;
       const accessToken = await getAccessToken(resellerId);
       const serviceTypes = await atomInventoryInstance.getAllServiceTypes({
-        "Content-Type": "application/json",
-        "X-AccessToken": accessToken,
+        'Content-Type': 'application/json',
+        'X-AccessToken': accessToken,
       });
       serviceTypes.body.map((service) => {
-        if (service.serviceKey === "multi_login") {
+        if (service.serviceKey === 'multi_login') {
           multiLogin = service.serviceId;
         }
-        if (service.serviceKey === "session_limit") {
+        if (service.serviceKey === 'session_limit') {
           sessionLimit = service.serviceId;
         }
-        if (service.serviceKey === "concurrent_users") {
+        if (service.serviceKey === 'concurrent_users') {
           concurrentUser = service.serviceId;
         }
-        if (service.serviceKey === "protocol") {
+        if (service.serviceKey === 'protocol') {
           protocols = service.serviceId;
         }
-        if (service.serviceKey === "country") {
+        if (service.serviceKey === 'country') {
           countries = service.serviceId;
         }
-        if (service.serviceKey === "city") {
+        if (service.serviceKey === 'city') {
           cities = service.serviceId;
         }
       });
@@ -159,15 +200,17 @@ module.exports = {
         vpnPassword: body.vpnPassword,
         packageType: body.packageType,
         period: body.period,
-        accountType: body.accountType,
+        account_type: body.accountType,
         isDedicated: body.isDedicated,
         dedicatedCountry: body.dedicatedCountry,
         uuid: body.uuid,
         preferences,
       };
+
+      console.log({ formData });
       const newUser = await atomVamInstance.create(formData, {
-        "Content-Type": "application/json",
-        "X-AccessToken": accessToken,
+        'Content-Type': 'application/json',
+        'X-AccessToken': accessToken,
       });
       if (
         newUser.body &&
@@ -178,14 +221,14 @@ module.exports = {
         return callback(
           newUser.body,
           statusCode.success,
-          "1",
+          '1',
           newUser.header.message
         );
       } else {
         return callback(
           newUser.body,
           statusCode.notFound,
-          "0",
+          '0',
           newUser.header.message
         );
       }
@@ -200,8 +243,8 @@ module.exports = {
     try {
       const accessToken = await getAccessToken(resellerId);
       const extendExpiry = await atomVamInstance.extendExpiry(formData, {
-        "Content-Type": "application/json",
-        "X-AccessToken": accessToken,
+        'Content-Type': 'application/json',
+        'X-AccessToken': accessToken,
       });
       console.log(extendExpiry);
       if (
@@ -213,14 +256,14 @@ module.exports = {
         return callback(
           extendExpiry.body,
           statusCode.success,
-          "1",
+          '1',
           extendExpiry.header.message
         );
       } else {
         return callback(
           extendExpiry.body,
           statusCode.notFound,
-          "0",
+          '0',
           extendExpiry.header.message
         );
       }
@@ -235,8 +278,8 @@ module.exports = {
     try {
       const accessToken = await getAccessToken(resellerId);
       const changePassword = await atomVamInstance.changePassword(formData, {
-        "Content-Type": "application/json",
-        "X-AccessToken": accessToken,
+        'Content-Type': 'application/json',
+        'X-AccessToken': accessToken,
       });
       if (
         changePassword.body &&
@@ -247,14 +290,14 @@ module.exports = {
         return callback(
           changePassword.body,
           statusCode.success,
-          "1",
+          '1',
           changePassword.header.message
         );
       } else {
         return callback(
           changePassword.body,
           statusCode.notFound,
-          "0",
+          '0',
           changePassword.header.message
         );
       }
@@ -275,26 +318,26 @@ module.exports = {
         protocols;
       const accessToken = await getAccessToken(resellerId);
       const serviceTypes = await atomInventoryInstance.getAllServiceTypes({
-        "Content-Type": "application/json",
-        "X-AccessToken": accessToken,
+        'Content-Type': 'application/json',
+        'X-AccessToken': accessToken,
       });
       serviceTypes.body.map((service) => {
-        if (service.serviceKey === "multi_login") {
+        if (service.serviceKey === 'multi_login') {
           multiLogin = service.serviceId;
         }
-        if (service.serviceKey === "session_limit") {
+        if (service.serviceKey === 'session_limit') {
           sessionLimit = service.serviceId;
         }
-        if (service.serviceKey === "concurrent_users") {
+        if (service.serviceKey === 'concurrent_users') {
           concurrentUser = service.serviceId;
         }
-        if (service.serviceKey === "protocol") {
+        if (service.serviceKey === 'protocol') {
           protocols = service.serviceId;
         }
-        if (service.serviceKey === "country") {
+        if (service.serviceKey === 'country') {
           countries = service.serviceId;
         }
-        if (service.serviceKey === "city") {
+        if (service.serviceKey === 'city') {
           cities = service.serviceId;
         }
       });
@@ -318,8 +361,8 @@ module.exports = {
       const updatePreferences = await atomVamInstance.updatePreferences(
         formData,
         {
-          "Content-Type": "application/json",
-          "X-AccessToken": accessToken,
+          'Content-Type': 'application/json',
+          'X-AccessToken': accessToken,
         }
       );
       if (
@@ -331,14 +374,14 @@ module.exports = {
         return callback(
           updatePreferences.body,
           statusCode.success,
-          "1",
+          '1',
           updatePreferences.header.message
         );
       } else {
         return callback(
           updatePreferences.body,
           statusCode.notFound,
-          "0",
+          '0',
           updatePreferences.header.message
         );
       }
@@ -351,11 +394,11 @@ module.exports = {
 
   enableOrDisable: async (resellerId, formData, callback) => {
     try {
-      if (formData.action === "enable") {
+      if (formData.action === 'enable') {
         const accessToken = await getAccessToken(resellerId);
         const enable = await atomVamInstance.enable(formData, {
-          "Content-Type": "application/json",
-          "X-AccessToken": accessToken,
+          'Content-Type': 'application/json',
+          'X-AccessToken': accessToken,
         });
         if (
           enable.body &&
@@ -366,22 +409,22 @@ module.exports = {
           return callback(
             enable.body,
             statusCode.success,
-            "1",
-            "VPN Account Enabled Successfully"
+            '1',
+            'VPN Account Enabled Successfully'
           );
         } else {
           return callback(
             undefined,
             statusCode.notFound,
-            "0",
-            "VPN Account Not Enabled"
+            '0',
+            'VPN Account Not Enabled'
           );
         }
       } else {
         const accessToken = await getAccessToken(resellerId);
         const disable = await atomVamInstance.disable(formData, {
-          "Content-Type": "application/json",
-          "X-AccessToken": accessToken,
+          'Content-Type': 'application/json',
+          'X-AccessToken': accessToken,
         });
         if (
           disable.body &&
@@ -392,15 +435,15 @@ module.exports = {
           return callback(
             disable.body,
             statusCode.success,
-            "1",
-            "VPN Account Disabled Successfully"
+            '1',
+            'VPN Account Disabled Successfully'
           );
         } else {
           return callback(
             undefined,
             statusCode.notFound,
-            "0",
-            "VPN Account Not Disabled"
+            '0',
+            'VPN Account Not Disabled'
           );
         }
       }
@@ -417,8 +460,8 @@ module.exports = {
       const getResellerInventory = await atomVamInstance.getResellerInventory(
         `?iId=${resellerId}`,
         {
-          "Content-Type": "application/json",
-          "X-AccessToken": accessToken,
+          'Content-Type': 'application/json',
+          'X-AccessToken': accessToken,
         }
       );
       if (
@@ -430,15 +473,15 @@ module.exports = {
         return callback(
           getResellerInventory.body,
           statusCode.success,
-          "1",
-          "Reseller Inventory Found Successfully"
+          '1',
+          'Reseller Inventory Found Successfully'
         );
       } else {
         return callback(
           undefined,
           statusCode.notFound,
-          "0",
-          "Reseller Inventory Not Found"
+          '0',
+          'Reseller Inventory Not Found'
         );
       }
     } catch (error) {
@@ -454,8 +497,8 @@ module.exports = {
       const listUsers = await atomVamInstance.listUsers(
         `?iResellerId=${resellerId}&iPage=1`,
         {
-          "Content-Type": "application/json",
-          "X-AccessToken": accessToken,
+          'Content-Type': 'application/json',
+          'X-AccessToken': accessToken,
         }
       );
 
@@ -468,15 +511,15 @@ module.exports = {
         return callback(
           listUsers.body.data,
           statusCode.success,
-          "1",
-          "VPN Users Found Successfully"
+          '1',
+          'VPN Users Found Successfully'
         );
       } else {
         return callback(
           undefined,
           statusCode.notFound,
-          "0",
-          "VPN Users Not Found"
+          '0',
+          'VPN Users Not Found'
         );
       }
     } catch (error) {
@@ -490,8 +533,8 @@ module.exports = {
     try {
       const accessToken = await getAccessToken(resellerId);
       const serviceTypes = await atomInventoryInstance.getAllServiceTypes({
-        "Content-Type": "application/json",
-        "X-AccessToken": accessToken,
+        'Content-Type': 'application/json',
+        'X-AccessToken': accessToken,
       });
       if (
         serviceTypes.body &&
@@ -502,23 +545,58 @@ module.exports = {
         return callback(
           serviceTypes.body,
           statusCode.success,
-          "1",
-          "VPN Services Found Successfully"
+          '1',
+          'VPN Services Found Successfully'
         );
       } else {
         return callback(
           undefined,
           statusCode.notFound,
-          "0",
-          "VPN Services Not Found"
+          '0',
+          'VPN Services Not Found'
         );
       }
     } catch (error) {
       return {
         code: statusCode.someThingWentWrong,
-        status: "0",
+        status: '0',
         message: headerMessage.someThingWentWrong,
       };
+    }
+  },
+
+  getVpnUser: async (resellerId, formData, callback) => {
+    try {
+      const accessToken = await getAccessToken(resellerId);
+      const queryStrings = `?sUsername=${formData.vpnUsername}&iResellerId=${resellerId}`;
+      const vpnUser = await atomVapInstance.getUser(queryStrings, {
+        'Content-Type': 'application/json',
+        'X-AccessToken': accessToken,
+      });
+      if (
+        vpnUser.body &&
+        vpnUser.body !== null &&
+        vpnUser.body !== undefined &&
+        Object.keys(vpnUser.body).length !== 0
+      ) {
+        return callback(
+          vpnUser.body,
+          statusCode.success,
+          '1',
+          'VPN User Found Successfully'
+        );
+      } else {
+        return callback(
+          undefined,
+          statusCode.notFound,
+          '0',
+          'The Provided Username Is Invalid'
+        );
+      }
+    } catch (error) {
+      let code = statusCode.notFound;
+      let message = headerMessage.notFound;
+      return { code, message };
     }
   },
 };

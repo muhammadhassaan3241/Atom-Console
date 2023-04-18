@@ -50,7 +50,8 @@
     "supertest": "^6.3.3",
     "util": "^0.12.5",
     "winston": "^3.8.2",
-    "winston-mongodb": "^5.1.1"
+    "winston-mongodb": "^5.1.1",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "nyc": "^15.1.0"

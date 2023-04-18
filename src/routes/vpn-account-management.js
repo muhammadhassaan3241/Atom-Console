@@ -11,6 +11,7 @@ const {
   getVpnUsers,
   enableOrDisableVpnAccount,
   getServices,
+  getVpnUser,
 } = require("../controllers/vpn-account-management");
 
 const router = require("express").Router();
@@ -38,6 +39,7 @@ router
   )
   .get(vpnAccountManagementURL.getUserInventory, getVpnUserInventory)
   .get(vpnAccountManagementURL.getUsers, getVpnUsers)
+  .post(vpnAccountManagementURL.getUser, getVpnUser)
   .get(vpnAccountManagementURL.getServiceTypes, getServices);
 
 module.exports = router;

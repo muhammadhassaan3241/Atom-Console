@@ -220,6 +220,28 @@ module.exports = {
     }
   },
 
+  getVpnUser: async (request, response) => {
+    try {
+      const resellerId = request.user.reseller_id;
+      const formData = request.body;
+      vpnAccountManagementServices.getVpnUser(
+        resellerId,
+        formData,
+        (data, code, status, message) => {
+          return apiResponse(response, code, status, message, data);
+        }
+      );
+    } catch (error) {
+      return apiResponse(
+        response,
+        statusCode.someThingWentWrong,
+        "0",
+        headerMessage.someThingWentWrong,
+        undefined
+      );
+    }
+  },
+
   getServices: async (request, response) => {
     try {
       const resellerId = request.user.reseller_id;

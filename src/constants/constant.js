@@ -54,6 +54,7 @@ module.exports = {
     updatePreferenceOfVpnAccount: "/update-preferences",
     getUserInventory: "/inventory",
     getUsers: "/users",
+    getUser:"/user",
     getServiceTypes: "/getServices",
   },
 };
